@@ -35,59 +35,48 @@ public class LoginServlet extends HttpServlet {
         } else
         {
             System.out.println("PASS CHECK");
-            password = password + dao.getSalt(username);
-            MessageDigest digest;
-            try {
-                digest = MessageDigest.getInstance("SHA-1");
-                byte[] encodedhash = digest.digest(password.getBytes(StandardCharsets.UTF_8));
-                password=dao.bytesToHex(encodedhash);
-                String passwordvalidation=dao.loginPasswordCheck(username, password);
+            String passwordvalidation=dao.loginPasswordCheck(username, password);
 
-                if (passwordvalidation.equals("You logged in!"))
+            if (passwordvalidation.equals("You logged in!"))
+            {
+                System.out.println("You logged in!");
+                String role=dao.getRole(username);
+                System.out.println("ROLE ===== "+role);
+                HttpSession session = request.getSession(true);
+                synchronized(session)
                 {
-                    System.out.println("You logged in!");
-                    String role=dao.getRole(username);
-                    System.out.println("ROLE ===== "+role);
-                    HttpSession session = request.getSession(true);
-                    synchronized(session)
-                    {
-                        session.setAttribute("username", username);
-                        session.setAttribute("role", role);
+                    session.setAttribute("username", username);
+                    session.setAttribute("role", role);
 
-                        if (role.equals("student"))
-                        {
-                            System.out.println("INSIDE role STUDENT !");
-                            request.setAttribute("username", username);
-                            request.setAttribute("role", role);
-                            response.sendRedirect("student.jsp");
-                        }
-                        else if (role.equals("professor"))
-                        {
-                            System.out.println("INSIDE role PROFESSOR !");
-                            request.setAttribute("username", username);
-                            request.setAttribute("role", role);
-                            response.sendRedirect("professor.jsp");
-                        }
-                        else
-                        {
-                            System.out.println("INSIDE role SECRETARY !");
-                            request.setAttribute("username", username);
-                            request.setAttribute("role", role);
-                            response.sendRedirect("secretary.jsp");
-                        }
+                    if (role.equals("student"))
+                    {
+                        System.out.println("INSIDE role STUDENT !");
+                        request.setAttribute("username", username);
+                        request.setAttribute("role", role);
+                        response.sendRedirect("student.jsp");
+                    }
+                    else if (role.equals("professor"))
+                    {
+                        System.out.println("INSIDE role PROFESSOR !");
+                        request.setAttribute("username", username);
+                        request.setAttribute("role", role);
+                        response.sendRedirect("professor.jsp");
+                    }
+                    else
+                    {
+                        System.out.println("INSIDE role SECRETARY !");
+                        request.setAttribute("username", username);
+                        request.setAttribute("role", role);
+                        response.sendRedirect("secretary.jsp");
                     }
                 }
-                else
-                {
-                    request.setAttribute("message", passwordvalidation);
-                    //RequestDispatcher view = request.getRequestDispatcher("/index.jsp");
-                    //view.forward(request, response);
-                    response.sendRedirect("index.jsp");
-                }
             }
-            catch (NoSuchAlgorithmException e)
+            else
             {
-                e.printStackTrace();
+                request.setAttribute("message", passwordvalidation);
+                //RequestDispatcher view = request.getRequestDispatcher("/index.jsp");
+                //view.forward(request, response);
+                response.sendRedirect("index.jsp");
             }
         }
     }
