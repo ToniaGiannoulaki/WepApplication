@@ -8,6 +8,7 @@ public class Users {
     private String surname;
     private String type;
     private String password;
+    private String salt;
     private static int usersCounter = 0;
 
     // Getters and Setters
@@ -50,6 +51,14 @@ public class Users {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getSalt() {
+        return salt;
+    }
+
+    public void setSalt(String salt) {
+        this.salt = salt;
     }
 
     // Default Constructor

@@ -9,30 +9,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="41d759f1-1669-4082-9e41-fe16dff6bac3" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/Dao/SystemDao.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/Servlets/AdminServlet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/Servlets/ClientServlet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/Servlets/LoginServlet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/Servlets/SellerServlet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/Utilities/DBUtil.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/webapp/sellers.jsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/webapp/validation.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/webapplication/Admin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Classes/Admin.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/webapplication/Bill.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Classes/Bill.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/webapplication/Call.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Classes/Call.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/webapplication/Client.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Classes/Client.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/webapplication/CreateUsers.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Classes/CreateUsers.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/webapplication/HelloServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Classes/HelloServlet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/webapplication/Program.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Classes/Program.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/webapplication/Seller.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Classes/Seller.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/webapplication/Users.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Classes/Users.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/index.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/index.jsp" afterDir="false" />
-    </list>
+    <list default="true" id="41d759f1-1669-4082-9e41-fe16dff6bac3" name="Changes" comment="seller" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -210,11 +187,24 @@
       <option name="presentableId" value="Default" />
       <updated>1714921001121</updated>
       <workItem from="1714921002319" duration="2000" />
-      <workItem from="1714921627073" duration="2994000" />
+      <workItem from="1714921627073" duration="3584000" />
     </task>
+    <task id="LOCAL-00001" summary="seller">
+      <option name="closed" value="true" />
+      <created>1714925167618</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1714925167618</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="seller" />
+    <option name="LAST_COMMIT_MESSAGE" value="seller" />
   </component>
 </project>
