@@ -1,4 +1,4 @@
-package mainpackage;
+package Classes;
 
 public class Users {
 
@@ -7,6 +7,7 @@ public class Users {
     private String name;
     private String surname;
     private String type;
+    private String password;
     private static int usersCounter = 0;
 
     // Getters and Setters
@@ -41,6 +42,14 @@ public class Users {
 
     public void setSurname(String surname) {
         this.surname = surname;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     // Default Constructor

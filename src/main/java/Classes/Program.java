@@ -1,4 +1,4 @@
-package mainpackage;
+package Classes;
 
 public class Program {
 
