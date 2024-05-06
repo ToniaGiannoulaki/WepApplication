@@ -69,7 +69,7 @@ public class SystemDao {
     public String loginUnameCheck(String username) {
         String answer=null;
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * from Users where username=?");
+            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM users WHERE username=?");
             preparedStatement.setString(1, username);
             ResultSet rs = preparedStatement.executeQuery();
             if (!rs.next())
@@ -91,7 +91,7 @@ public class SystemDao {
     public String loginPasswordCheck(String username, String password) {
         String answer=null;
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * from Users where (username=? and password=?)");
+            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * from users where (username=? and password=?)");
             preparedStatement.setString(1, username);
             preparedStatement.setString(2, password);
             ResultSet rs = preparedStatement.executeQuery();
@@ -114,7 +114,7 @@ public class SystemDao {
     public String getRole(String username) {
         String role=null;
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT type FROM Users WHERE username=?");
+            PreparedStatement preparedStatement = connection.prepareStatement("SELECT type FROM users WHERE username=?");
             preparedStatement.setString(1, username);
             ResultSet rs1 = preparedStatement.executeQuery();
             if (rs1.next())

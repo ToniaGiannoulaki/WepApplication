@@ -50,10 +50,10 @@ public class SellerServlet extends HttpServlet {
                 out.println("</tr>");
 
                 PreparedStatement preparedStatement1 = connection
-                        .prepareStatement("SELECT programName, charge, data, sms, minutes FROM Program"); //find program info
+                        .prepareStatement("SELECT program_name, charge, data, sms, minutes FROM programs"); //find program info
                 ResultSet rs1 = preparedStatement1.executeQuery();
                 while (rs1.next()) { //if DB returns data - until data ends
-                    String programName = rs1.getString("programName");
+                    String programName = rs1.getString("program_name");
                     int charge = rs1.getInt("charge");
                     int data = rs1.getInt("data");
                     int sms = rs1.getInt("sms");
