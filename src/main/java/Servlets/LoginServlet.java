@@ -3,13 +3,9 @@ import Dao.SystemDao;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 
-import java.io.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
@@ -48,34 +44,32 @@ public class LoginServlet extends HttpServlet {
                     session.setAttribute("username", username);
                     session.setAttribute("role", role);
 
-                    if (role.equals("student"))
+                    if (role.equals("seller"))
                     {
-                        System.out.println("INSIDE role STUDENT !");
+                        System.out.println("INSIDE role SELLER !");
                         request.setAttribute("username", username);
                         request.setAttribute("role", role);
-                        response.sendRedirect("student.jsp");
+                        response.sendRedirect("seller.jsp");
                     }
-                    else if (role.equals("professor"))
+                    else if (role.equals("client"))
                     {
-                        System.out.println("INSIDE role PROFESSOR !");
+                        System.out.println("INSIDE role CLIENT !");
                         request.setAttribute("username", username);
                         request.setAttribute("role", role);
-                        response.sendRedirect("professor.jsp");
+                        response.sendRedirect("client.jsp");
                     }
-                    else
+                    else if (role.equals("admin"))
                     {
-                        System.out.println("INSIDE role SECRETARY !");
+                        System.out.println("INSIDE role ADMIN !");
                         request.setAttribute("username", username);
                         request.setAttribute("role", role);
-                        response.sendRedirect("secretary.jsp");
+                        response.sendRedirect("admin.jsp");
                     }
                 }
             }
             else
             {
                 request.setAttribute("message", passwordvalidation);
-                //RequestDispatcher view = request.getRequestDispatcher("/index.jsp");
-                //view.forward(request, response);
                 response.sendRedirect("index.jsp");
             }
         }

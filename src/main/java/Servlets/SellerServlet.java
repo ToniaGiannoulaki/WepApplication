@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.*;
 
-@WebServlet("/sellerservlet")
+@WebServlet("/seller")
 public class SellerServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;

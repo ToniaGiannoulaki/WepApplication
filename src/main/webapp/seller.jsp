@@ -27,7 +27,7 @@
 </head>
 <body >
 <div style="text-align: center">
-    <form method="get" action="sellerservlet">
+    <form method="get" action="seller">
         <div style="text-align:right; size:15px;">
             Welcome, <%= session.getAttribute("username") %>
         </div>
