@@ -88,12 +88,12 @@ public class SellerServlet extends HttpServlet {
                 out.println("</tr>");
 
                 PreparedStatement preparedStatement1 = connection
-                        .prepareStatement("SELECT username, name, afm, phoneNumber, program_name FROM users INNER JOIN clients ON users.username = clients.user_username"); //find program info
+                        .prepareStatement("SELECT username, name, afm, phone_number, program_name FROM users INNER JOIN clients ON users.username = clients.user_username"); //find program info
                 ResultSet rs1 = preparedStatement1.executeQuery();
                 while (rs1.next()) { //if DB returns data - until data ends
                     String name = rs1.getString("name");
                     String afm = rs1.getString("afm");
-                    String phone = rs1.getString("phoneNumber");
+                    String phone = rs1.getString("phone_number");
                     String username = rs1.getString("username");
                     String programName = rs1.getString("program_name");
 
@@ -111,6 +111,8 @@ public class SellerServlet extends HttpServlet {
                     out.println("<label for=\"programName\" class=\"label\">Program Name</label>");
                     out.println("<input id=\"programName\" type=\"text\" name=\"programName\" class=\"input\">");
                     out.println("</div>");
+                    out.println("<br>");
+                    out.println("<div>");
                     out.println("<input style=\"font-size: 20px\" type=\"submit\" name=\"assignProgram\" value=\"Αντιστοίχηση\"/>");
                     out.println("</div>");
                     out.println("<br>");
@@ -131,7 +133,7 @@ public class SellerServlet extends HttpServlet {
         response.setHeader("Pragma", "no-cache");
         response.setDateHeader("Expires", 0); //restrict caching
 
-        if(request.getParameter("addClient") != null) //assign button actions
+        if(request.getParameter("addClient") != null) //add client
         {
             String username = request.getParameter("username");
             String name = request.getParameter("name");
@@ -147,7 +149,7 @@ public class SellerServlet extends HttpServlet {
                 try {
                     PreparedStatement preparedStatement2 = connection
                             .prepareStatement("INSERT INTO users (username, name, surname, type, password) " +
-                                    "VALUES (username =?, name=?, surname=?, type=?, password=?)"); //insert user
+                                    "VALUES (?, ?, ?, ?, ?)"); //insert user
                     preparedStatement2.setString(1, username);
                     preparedStatement2.setString(2, name);
                     preparedStatement2.setString(3, surname);
@@ -158,8 +160,8 @@ public class SellerServlet extends HttpServlet {
                         createDynPage(response, "Ο χρήστης δεν καταχωρήθηκε"); //debug message
                     } else {
                         PreparedStatement preparedStatement3 = connection
-                                .prepareStatement("INSERT INTO clients (user_username, address, phoneNumber, AFM) " +
-                                        "VALUES (username =?, address=?, phoneNumber=?, AFM=?)"); //insert client
+                                .prepareStatement("INSERT INTO clients (user_username, address, phone_number, afm) " +
+                                        "VALUES (?, ?, ?, ?)"); //insert client
                         preparedStatement3.setString(1, username);
                         preparedStatement3.setString(2, address);
                         preparedStatement3.setString(3, phone);
@@ -191,15 +193,14 @@ public class SellerServlet extends HttpServlet {
 
             try {
                 PreparedStatement preparedStatement1 = connection
-                        .prepareStatement("UPDATE clients SET program_Name=? WHERE user_username=?"); //update client
+                        .prepareStatement("UPDATE clients SET program_name=? WHERE user_username=?"); //update client
                 preparedStatement1.setString(1, programName);
                 preparedStatement1.setString(2, username);
                 if (preparedStatement1.executeUpdate() != 1) {
                     System.out.println("Problem with client update");
                     createDynPage(response, "Η αντιστοίχηση δεν ήταν επιτυχής"); //debug message
                 } else {
-                    request.setAttribute("clientToOffer", "clientToOffer");
-                    doGet(request, response);
+                    response.sendRedirect("seller.jsp");
                 }
             } catch (SQLException e) {
                 e.printStackTrace();

@@ -40,11 +40,11 @@
     </form>
     <br>
     <div class="client-form">
-        <form name="addClient" action="seller" method="post">
+        <form action="seller" method="post">
             <div class="sign-in-htm">
                 <div class="group">
-                    <label for="user" class="label">Username</label>
-                    <input id="user" type="text" name="user" class="input">
+                    <label for="username" class="label">Username</label>
+                    <input id="username" type="text" name="username" class="input">
                 </div>
                 <br>
                 <div class="group">
@@ -64,26 +64,26 @@
                 <br>
                 <div class="group">
                     <label for="address" class="label">Address</label>
-                    <input id="address" type="text" name="type" class="input">
+                    <input id="address" type="text" name="address" class="input">
                 </div>
                 <br>
                 <div class="group">
                     <label for="AFM" class="label">AFM</label>
-                    <input id="AFM" type="text" name="type" class="input">
+                    <input id="AFM" type="text" name="AFM" class="input">
                 </div>
                 <br>
                 <div class="group">
                     <label for="phoneNumber" class="label">Phone Number</label>
-                    <input id="phoneNumber" type="text" name="type" class="input">
+                    <input id="phoneNumber" type="text" name="phoneNumber" class="input">
                 </div>
                 <br>
                 <div class="group">
-                    <label for="logpass" class="label">Password</label>
-                    <input id="logpass" type="password" name="logpass" class="input" data-type="password">
+                    <label for="password" class="label">Password</label>
+                    <input id="password" type="password" name="password" class="input" data-type="password">
                 </div>
                 <br>
                 <div class="group">
-                    <input type="submit" class="button" value="Εισαγωγή νέου πελάτη">
+                    <input type="submit" name="addClient" class="button" value="Εισαγωγή νέου πελάτη">
                 </div>
             </div>
         </form>
