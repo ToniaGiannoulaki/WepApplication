@@ -1,6 +1,7 @@
 package Servlets;
 
 
+import Dao.SystemDao;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -21,6 +22,8 @@ public class SellerServlet extends HttpServlet {
         connection = Utilities.DBUtil.getConnection(); //get DB connection
     }
 
+    SystemDao dao = new SystemDao(); //get login validator instance
+
     protected void doGet(HttpServletRequest request,
                          HttpServletResponse response)
             throws ServletException, IOException {
@@ -29,11 +32,12 @@ public class SellerServlet extends HttpServlet {
         response.setHeader("Pragma", "no-cache");
         response.setDateHeader("Expires", 0); //restrict caching
 
+        response.setContentType("text/html; charset=UTF-8"); //creating dynamic page
+        response.setCharacterEncoding("UTF-8");
+        request.setCharacterEncoding("UTF-8");
+
         if (request.getParameter("showOffers") != null) //show offers button actions
         {
-            response.setContentType("text/html; charset=UTF-8"); //creating dynamic page
-            response.setCharacterEncoding("UTF-8");
-            request.setCharacterEncoding("UTF-8");
             PrintWriter out = response.getWriter();
             out.println("<html>");
             out.println("<head><title>Προγράμματα</title> </head>");
@@ -59,8 +63,57 @@ public class SellerServlet extends HttpServlet {
                     int sms = rs1.getInt("sms");
                     int minutes = rs1.getInt("minutes");
 
-                    String htmlRow = createHTMLRow(programName, charge, data, sms, minutes); // html table with all the data
+                    String htmlRow = createHTMLRowPrograms(programName, charge, data, sms, minutes); // html table with all the data
                     out.println(htmlRow);
+                }
+                rs1.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+                out.println("<p style=\"font-size: 25px\"> Something went wrong </p>"); //debug message
+            }
+        }else if(request.getParameter("clientToOffer") != null) {
+            PrintWriter out = response.getWriter();
+            out.println("<html>");
+            out.println("<head><title>Πελάτες</title> </head>");
+            out.println("<body style=\"text-align: center; font-size: 20px\"");
+            createDynPage(response, "Πελάτες");
+            try { //creating table in dyn page
+                out.println("<table style=\"text-align: center; margin-left: auto; margin-right: auto\"  border=\"1\">");
+                out.println("<tr>");
+                out.println("<th>Όνομα Πελάτη</th>");
+                out.println("<th>ΑΦΜ</th>");
+                out.println("<th>Τηλέφωνο</th>");
+                out.println("<th>Username</th>");
+                out.println("<th>Πρόγραμμα</th>");
+                out.println("</tr>");
+
+                PreparedStatement preparedStatement1 = connection
+                        .prepareStatement("SELECT username, name, afm, phoneNumber, program_name FROM users INNER JOIN clients ON users.username = clients.user_username"); //find program info
+                ResultSet rs1 = preparedStatement1.executeQuery();
+                while (rs1.next()) { //if DB returns data - until data ends
+                    String name = rs1.getString("name");
+                    String afm = rs1.getString("afm");
+                    String phone = rs1.getString("phoneNumber");
+                    String username = rs1.getString("username");
+                    String programName = rs1.getString("program_name");
+
+                    String htmlRow = createHTMLRowClients(name, afm, phone, username, programName); // html table with all the data
+                    out.println(htmlRow);
+
+                    out.println("<br><br>");
+                    out.println("<form name=\"clientToProgram\" action=\"seller\" method=\"post\">");
+                    out.println("<div class=\"group\">");
+                    out.println("<label for=\"username\" class=\"label\">Username</label>");
+                    out.println("<input id=\"username\" type=\"text\" name=\"username\" class=\"input\">");
+                    out.println("</div>");
+                    out.println("<br><br>");
+                    out.println("<div class=\"group\">");
+                    out.println("<label for=\"programName\" class=\"label\">Program Name</label>");
+                    out.println("<input id=\"programName\" type=\"text\" name=\"programName\" class=\"input\">");
+                    out.println("</div>");
+                    out.println("<input style=\"font-size: 20px\" type=\"submit\" name=\"assignProgram\" value=\"Αντιστοίχηση\"/>");
+                    out.println("</div>");
+                    out.println("<br>");
                 }
                 rs1.close();
             } catch (SQLException e) {
@@ -78,35 +131,97 @@ public class SellerServlet extends HttpServlet {
         response.setHeader("Pragma", "no-cache");
         response.setDateHeader("Expires", 0); //restrict caching
 
-        try {
-            String subject = request.getParameter("subject");
-            int registrationNumber = Integer.parseInt(request.getParameter("registrationNumber"));
-            int grade = Integer.parseInt(request.getParameter("grade"));
+        if(request.getParameter("addClient") != null) //assign button actions
+        {
+            String username = request.getParameter("username");
+            String name = request.getParameter("name");
+            String surname = request.getParameter("surname");
+            String type = request.getParameter("type");
+            String address = request.getParameter("address");
+            String afm = request.getParameter("AFM");
+            String phone = request.getParameter("phoneNumber");
+            String password = request.getParameter("password");
+            String usernameValidation=dao.signupUsernameCheck(username); //check for duplicate username
+
+            if (usernameValidation.equals("ok")){
+                try {
+                    PreparedStatement preparedStatement2 = connection
+                            .prepareStatement("INSERT INTO users (username, name, surname, type, password) " +
+                                    "VALUES (username =?, name=?, surname=?, type=?, password=?)"); //insert user
+                    preparedStatement2.setString(1, username);
+                    preparedStatement2.setString(2, name);
+                    preparedStatement2.setString(3, surname);
+                    preparedStatement2.setString(4, type);
+                    preparedStatement2.setString(5, password);
+                    if (preparedStatement2.executeUpdate() != 1) {
+                        System.out.println("Problem with user insert");
+                        createDynPage(response, "Ο χρήστης δεν καταχωρήθηκε"); //debug message
+                    } else {
+                        PreparedStatement preparedStatement3 = connection
+                                .prepareStatement("INSERT INTO clients (user_username, address, phoneNumber, AFM) " +
+                                        "VALUES (username =?, address=?, phoneNumber=?, AFM=?)"); //insert client
+                        preparedStatement3.setString(1, username);
+                        preparedStatement3.setString(2, address);
+                        preparedStatement3.setString(3, phone);
+                        preparedStatement3.setString(4, afm);
+
+                        if (preparedStatement3.executeUpdate() != 1) {
+                            PreparedStatement preparedStatement4 = connection
+                                    .prepareStatement("DELETE FROM users WHERE username=?"); //delete user
+                            preparedStatement4.setString(1, username);
+                            preparedStatement3.executeUpdate();
+                            System.out.println("Problem with client insert");
+                            createDynPage(response, "Ο πελάτης δεν καταχωρήθηκε"); //debug message
+                        }else{
+                            response.sendRedirect("seller.jsp");
+                        }
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    createDynPage(response, "Ο χρήστης δεν καταχωρήθηκε"); //debug message
+                }
+            } else{
+                request.setAttribute("message", usernameValidation);
+                request.setAttribute("user", username);
+                response.sendRedirect("seller.jsp");
+            }
+        }else if(request.getParameter("assignProgram") != null){
+            String username = request.getParameter("username");
+            String programName = request.getParameter("programName");
+
             try {
-                PreparedStatement preparedStatement2 = connection
-                        .prepareStatement("UPDATE course_has_students SET Grade =? WHERE registrationNumber=? AND courseName=?"); //update the grade
-                preparedStatement2.setInt(1, grade);
-                preparedStatement2.setInt(2, registrationNumber);
-                preparedStatement2.setString(3, subject);
-                if (preparedStatement2.executeUpdate() != 1) {
-                    System.out.println("Problem with grade update");
-                    createDynPage(response, "Ο βαθμός δεν καταχωρήθηκε"); //debug message
+                PreparedStatement preparedStatement1 = connection
+                        .prepareStatement("UPDATE clients SET program_Name=? WHERE user_username=?"); //update client
+                preparedStatement1.setString(1, programName);
+                preparedStatement1.setString(2, username);
+                if (preparedStatement1.executeUpdate() != 1) {
+                    System.out.println("Problem with client update");
+                    createDynPage(response, "Η αντιστοίχηση δεν ήταν επιτυχής"); //debug message
                 } else {
-                    request.setAttribute("subject", subject);
+                    request.setAttribute("clientToOffer", "clientToOffer");
                     doGet(request, response);
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
-                createDynPage(response, "Ο βαθμός δεν καταχωρήθηκε"); //debug message
+                createDynPage(response, "Η αντιστοίχηση δεν ήταν επιτυχής"); //debug message
             }
-        }catch (NumberFormatException e){
-            e.printStackTrace();
-            createDynPage(response, "Παρακαλώ δώστε έγκυρα στοιχεία"); //debug message
         }
     }
 
 
-    private String createHTMLRow(String programName, int charge, int data, int sms, int minutes) //create table for first button
+    private String createHTMLRowClients(String name, String afm, String phoneNumber, String username, String programName) //create table for clients
+    {
+        String row = "<tr>";
+        row  += "<td>" + name + "</td>";
+        row  += "<td>" + afm + "</td>";
+        row  += "<td>" + phoneNumber + "</td>";
+        row  += "<td>" + username + "</td>";
+        row  += "<td>" + programName + "</td>";
+        row +="</tr>";
+        return row;
+    }
+
+    private String createHTMLRowPrograms(String programName, int charge, int data, int sms, int minutes) //create table for programs
     {
         String row = "<tr>";
         row  += "<td>" + programName + "</td>";
@@ -126,7 +241,7 @@ public class SellerServlet extends HttpServlet {
         out.println("<head><title>" + message + "</title></head>");
         out.println("<body style=\"text-align: center\">");
         out.println("<p>" + message + "</p>");
-        out.println("<a href=\"professor.jsp\">Επιστροφή στην αρχική σελίδα</a>");
+        out.println("<a href=\"seller.jsp\">Επιστροφή στην αρχική σελίδα</a>");
         out.println("<br><br>");
         out.println("</body></html>");
     }

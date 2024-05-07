@@ -35,11 +35,59 @@
         <br><br><br>
         <input style="font-size: 20px" type="submit" name="showOffers" value="Προβολή όλων των διαθέσιμων προγραμμάτων/πακέτων τηλεφωνίας."/>
         <br><br>
-        <input style="font-size: 20px" type="submit" name="addClient" value="Εισαγωγή νέου πελάτη."/>
-        <br><br>
         <input style="font-size: 20px" type="submit" name="clientToOffer" value="Αντιστοίχηση πελάτη σε πρόγραμμα τηλεφωνίας."/>
         <br><br><br>
     </form>
+    <br>
+    <div class="client-form">
+        <form name="addClient" action="seller" method="post">
+            <div class="sign-in-htm">
+                <div class="group">
+                    <label for="user" class="label">Username</label>
+                    <input id="user" type="text" name="user" class="input">
+                </div>
+                <br>
+                <div class="group">
+                    <label for="name" class="label">Name</label>
+                    <input id="name" type="text" name="name" class="input">
+                </div>
+                <br>
+                <div class="group">
+                    <label for="surname" class="label">Surname</label>
+                    <input id="surname" type="text" name="surname" class="input">
+                </div>
+                <br>
+                <div class="group">
+                    <label for="type" class="label">Type</label>
+                    <input id="type" type="text" name="type" class="input">
+                </div>
+                <br>
+                <div class="group">
+                    <label for="address" class="label">Address</label>
+                    <input id="address" type="text" name="type" class="input">
+                </div>
+                <br>
+                <div class="group">
+                    <label for="AFM" class="label">AFM</label>
+                    <input id="AFM" type="text" name="type" class="input">
+                </div>
+                <br>
+                <div class="group">
+                    <label for="phoneNumber" class="label">Phone Number</label>
+                    <input id="phoneNumber" type="text" name="type" class="input">
+                </div>
+                <br>
+                <div class="group">
+                    <label for="logpass" class="label">Password</label>
+                    <input id="logpass" type="password" name="logpass" class="input" data-type="password">
+                </div>
+                <br>
+                <div class="group">
+                    <input type="submit" class="button" value="Εισαγωγή νέου πελάτη">
+                </div>
+            </div>
+        </form>
+    </div>
     <br>
     <form method="get" action="logout">
         <input type="submit" class="button" value="Log Out">

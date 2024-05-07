@@ -6,6 +6,7 @@ public class Client extends Users{
     private String address;
     private final String AFM;
     private String phoneNumber;
+    private String programName;
 
     // Getters and Setters
     public String getAddress() {
@@ -26,6 +27,14 @@ public class Client extends Users{
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public String getProgramName() {
+        return programName;
+    }
+
+    public void setProgramName(String programName) {
+        this.programName = programName;
     }
 
     //Constructor

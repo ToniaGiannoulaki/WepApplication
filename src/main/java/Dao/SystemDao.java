@@ -126,4 +126,24 @@ public class SystemDao {
         }
         return role;
     }
+
+    public String signupUsernameCheck(String username) {
+        String answer=null;
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM users where username=?");
+            preparedStatement.setString(1, username);
+            ResultSet rs = preparedStatement.executeQuery();
+            if (!rs.next())
+            {
+                answer="ok";
+            }
+            else
+            {
+                answer="There is already a user with the username: "+username+", please enter a different username.";
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return answer;
+    }
 }
