@@ -13,6 +13,59 @@ public class SystemDao {
         connection = Utilities.DBUtil.getConnection(); //get DB connection
     }
 
+    public String bytesToHex(byte[] hash) {
+        StringBuffer hexString = new StringBuffer();
+        for (int i = 0; i < hash.length; i++) {
+            String hex = Integer.toHexString(0xff & hash[i]);
+            if(hex.length() == 1) hexString.append('0');
+            hexString.append(hex);
+        }
+        return hexString.toString();
+    }
+
+    public String getAlphaNumericString(int n)
+    {
+
+        // chose a Character random from this String
+        String AlphaNumericString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                + "0123456789"
+                + "abcdefghijklmnopqrstuvxyz";
+
+        // create StringBuffer size of AlphaNumericString
+        StringBuilder sb = new StringBuilder(n);
+
+        for (int i = 0; i < n; i++) {
+
+            // generate a random number between
+            // 0 to AlphaNumericString variable length
+            int index
+                    = (int)(AlphaNumericString.length()
+                    * Math.random());
+
+            // add Character one by one in end of sb
+            sb.append(AlphaNumericString
+                    .charAt(index));
+        }
+
+        return sb.toString();
+    }
+
+    public String getSalt(String username) {
+        String salt=null;
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement("SELECT salt from users where username=?");
+            preparedStatement.setString(1, username);
+            ResultSet rs = preparedStatement.executeQuery();
+            if (rs.next())
+            {
+                salt=rs.getString("salt");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return salt;
+    }
+
     public String loginUnameCheck(String username) {
         String answer=null;
         try {
@@ -56,6 +109,66 @@ public class SystemDao {
             e.printStackTrace();
         }
         return answer;
+    }
+
+    public boolean signup(String username, String name, String surname, String role, String password, String salt)
+    {
+        try {
+            PreparedStatement preparedStatement1 = connection.prepareStatement("INSERT into users (username, name, surname, type, password, salt) values (?,?,?,?,?,?)");
+            preparedStatement1.setString(1, username);
+            preparedStatement1.setString(2, name);
+            preparedStatement1.setString(3, surname);
+            preparedStatement1.setString(4, role);
+            preparedStatement1.setString(5, password);
+            preparedStatement1.setString(6, salt);
+            if(preparedStatement1.executeUpdate() == 0){
+                System.out.println("Problem");
+            }else System.out.println("ADDED user");
+
+            switch (role) {
+                case "admin": {
+                    PreparedStatement preparedStatement = connection.prepareStatement("INSERT into admin (username) values (?)");
+                    preparedStatement.setString(1, username);
+                    if (preparedStatement.executeUpdate() == 0) {
+                        System.out.println("Problem");
+                        throw new SQLException();
+                    } else System.out.println("ADDED admin");
+                    break;
+                }
+                case "client": {
+                    PreparedStatement preparedStatement = connection.prepareStatement("INSERT into clients (user_username) values (?)");
+                    preparedStatement.setString(1, username);
+                    if (preparedStatement.executeUpdate() == 0) {
+                        System.out.println("Problem");
+                        throw new SQLException();
+                    } else System.out.println("ADDED client");
+                    break;
+                }
+                case "seller": {
+                    PreparedStatement preparedStatement = connection.prepareStatement("INSERT into sellers (username) values (?)");
+                    preparedStatement.setString(1, username);
+                    if (preparedStatement.executeUpdate() == 0) {
+                        System.out.println("Problem");
+                        throw new SQLException();
+                    } else System.out.println("ADDED seller");
+
+                    break;
+                }
+                default:
+                    throw new SQLException();
+            }
+        }catch(SQLException e) {
+            e.printStackTrace();
+            try {
+                PreparedStatement delStatement = connection.prepareStatement("DELETE FROM users WHERE username=?");
+                delStatement.setString(1, username);
+                delStatement.executeUpdate();
+            }catch (SQLException q){
+                e.printStackTrace();
+            }
+            return false;
+        }
+        return true;
     }
 
     public String getRole(String username) {

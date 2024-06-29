@@ -32,6 +32,52 @@
       </form>
     </div>
   </div>
+  <br><br>
+</div>
+
+<div class="register-wrap" >
+  <form name="SignUp" action="register" onsubmit="return validateSignUpForm()" method="post">
+    <div class="sign-up-htm">
+      <div class="group">
+        <label for="username" class="label">Username</label>
+        <input id="username" type="text" name="newusername" class="input">
+      </div>
+      <br>
+      <div class="group">
+        <label for="name" class="label">Name</label>
+        <input id="name" type="text" name="newname" class="input">
+      </div>
+      <br>
+      <div class="group">
+        <label for="surname" class="label">Surname</label>
+        <input id="surname" type="text" name="newsurname" class="input">
+      </div>
+      <br>
+      <div class="group">
+        <label for="regpass" class="label">Password</label>
+        <input id="regpass" type="password" name="newpassword1" class="input" data-type="password">
+      </div>
+      <br>
+      <div class="group">
+        <label for="regpass" class="label">Repeat Password</label>
+        <input id="regpass" type="password" name="newpassword2" class="input" data-type="password">
+      </div>
+      <br>
+
+      <div class="dropdown">
+        <label for="role">Type</label>
+        <select name="role" id="role">
+          <option value="admin">Admin</option>
+          <option value="client">Client</option>
+          <option value="seller">Seller</option>
+        </select>
+      </div>
+      <br>
+      <div class="group">
+        <input type="submit" class="button" value="Sign Up">
+      </div>
+    </div>
+  </form>
 </div>
 </body>
 </html>
