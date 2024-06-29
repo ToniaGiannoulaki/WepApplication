@@ -23,9 +23,7 @@ public class SellerServlet extends HttpServlet {
 
     SystemDao dao = new SystemDao(); //get login validator instance
 
-    protected void doGet(HttpServletRequest request,
-                         HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
         response.setHeader("Pragma", "no-cache");
@@ -121,6 +119,13 @@ public class SellerServlet extends HttpServlet {
                 e.printStackTrace();
                 out.println("<p style=\"font-size: 25px\"> Something went wrong </p>"); //debug message
             }
+        }else if(request.getParameter("sendBill") != null) {
+            PrintWriter out = response.getWriter();
+            out.println("<html>");
+            out.println("<head><title>Έκδοση Λογαριασμού</title> </head>");
+            out.println("<body style=\"text-align: center; font-size: 20px\"");
+            createDynPage(response, "Έκδοση Λογαριασμού");
+            out.println("</body></html>");
         }
     }
 
@@ -205,9 +210,34 @@ public class SellerServlet extends HttpServlet {
                 e.printStackTrace();
                 createDynPage(response, "Η αντιστοίχηση δεν ήταν επιτυχής"); //debug message
             }
+        } else if (request.getParameter("submitBill") != null) {
+            String clientUsername = request.getParameter("clientUsername");
+            String clientName = request.getParameter("clientName");
+            String clientSurname = request.getParameter("clientSurname");
+            String clientAFM = request.getParameter("clientAFM");
+            String programName = request.getParameter("programName");
+            String month = request.getParameter("month");
+            int charge = Integer.parseInt(request.getParameter("charge"));
+            boolean paid = request.getParameter("paid").equals("Yes");
+
+            try {
+                PreparedStatement pst = connection.prepareStatement("INSERT INTO bills (username, name, surname, afm, program_name, month, charge, paid) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+                pst.setString(1, clientUsername);
+                pst.setString(2, clientName);
+                pst.setString(3, clientSurname);
+                pst.setString(4, clientAFM);
+                pst.setString(5, programName);
+                pst.setString(6, month);
+                pst.setInt(7, charge);
+                pst.setBoolean(8, paid);
+                pst.executeUpdate();
+                response.sendRedirect("seller?sendBillSuccess=true");
+            } catch (SQLException e) {
+                e.printStackTrace();
+                response.sendRedirect("seller?sendBillError=true");
+            }
         }
     }
-
 
     private String createHTMLRowClients(String name, String afm, String phoneNumber, String username, String programName) //create table for clients
     {

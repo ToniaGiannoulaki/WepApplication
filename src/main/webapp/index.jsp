@@ -5,7 +5,7 @@
   <title>Login Form</title>
   <script src="validation.js" type="text/javascript" ></script>
 </head>
-<body style="text-align: center">
+<body style="text-align: center; background-color: #C2DFFF">
 
 <h2 style="text-align: center">Login Page</h2><br>
 
