@@ -31,7 +31,7 @@
         <div style="text-align:right; size:15px;">
             Welcome, <%= session.getAttribute("username") %>
         </div>
-        <p style="font-size: 30px">Λειτουργίες Πελάτη</p>
+        <p style="font-size: 30px">Λειτουργίες Διαχειριστή</p>
         <br><br><br>
         <input style="font-size: 20px" type="submit" name="createSeller" value="Δημιουργία πωλητή"/>
         <br><br>
@@ -58,26 +58,6 @@
                 <div class="group">
                     <label for="surname" class="label">Επίθετο</label>
                     <input id="surname" type="text" name="surname" class="input">
-                </div>
-                <br>
-                <div class="group">
-                    <label for="type" class="label">Τύπος</label>
-                    <input id="type" type="text" name="type" class="input">
-                </div>
-                <br>
-                <div class="group">
-                    <label for="address" class="label">Διεύθυνση</label>
-                    <input id="address" type="text" name="address" class="input">
-                </div>
-                <br>
-                <div class="group">
-                    <label for="AFM" class="label">ΑΦΜ</label>
-                    <input id="AFM" type="text" name="AFM" class="input">
-                </div>
-                <br>
-                <div class="group">
-                    <label for="phoneNumber" class="label">Αριθμός Κινητού</label>
-                    <input id="phoneNumber" type="text" name="phoneNumber" class="input">
                 </div>
                 <br>
                 <div class="group">

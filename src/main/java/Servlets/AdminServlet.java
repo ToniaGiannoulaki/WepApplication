@@ -20,11 +20,7 @@ import java.sql.SQLException;
 public class AdminServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
-    private Connection connection;
 
-    public AdminServlet() {
-        connection = Utilities.DBUtil.getConnection(); //get DB connection
-    }
     SystemDao dao = new SystemDao(); //get login validator instance
 
     protected void doPost(HttpServletRequest request,
@@ -42,8 +38,6 @@ public class AdminServlet extends HttpServlet {
             String username = request.getParameter("username");
             String name = request.getParameter("name");
             String surname = request.getParameter("surname");
-            String address = request.getParameter("address");
-            String afm = request.getParameter("AFM");
             String password=request.getParameter("password")+salt;
             String usernameValidation=dao.signupUsernameCheck(username); //check for duplicate username
 
