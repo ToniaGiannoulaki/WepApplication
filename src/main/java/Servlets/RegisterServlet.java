@@ -48,7 +48,7 @@ public class RegisterServlet extends HttpServlet {
                 //password =""+password;
                 System.out.println("pass = "+ password); //set new hashed password
                 HttpSession session = request.getSession();
-                boolean success = dao.signup(username, name, surname, role, password, salt); //add user
+                boolean success = dao.signupAdmin(username, name, surname, password, salt); //add user
 
                 if (success) {
                     synchronized (session) {

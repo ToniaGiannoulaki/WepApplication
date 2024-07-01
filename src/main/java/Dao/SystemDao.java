@@ -111,52 +111,97 @@ public class SystemDao {
         return answer;
     }
 
-    public boolean signup(String username, String name, String surname, String role, String password, String salt)
+    public boolean signupAdmin(String username, String name, String surname, String password, String salt)
     {
         try {
             PreparedStatement preparedStatement1 = connection.prepareStatement("INSERT into users (username, name, surname, type, password, salt) values (?,?,?,?,?,?)");
             preparedStatement1.setString(1, username);
             preparedStatement1.setString(2, name);
             preparedStatement1.setString(3, surname);
-            preparedStatement1.setString(4, role);
+            preparedStatement1.setString(4, "admin");
             preparedStatement1.setString(5, password);
             preparedStatement1.setString(6, salt);
             if(preparedStatement1.executeUpdate() == 0){
                 System.out.println("Problem");
             }else System.out.println("ADDED user");
 
-            switch (role) {
-                case "admin": {
-                    PreparedStatement preparedStatement = connection.prepareStatement("INSERT into admin (username) values (?)");
-                    preparedStatement.setString(1, username);
-                    if (preparedStatement.executeUpdate() == 0) {
-                        System.out.println("Problem");
-                        throw new SQLException();
-                    } else System.out.println("ADDED admin");
-                    break;
-                }
-                case "client": {
-                    PreparedStatement preparedStatement = connection.prepareStatement("INSERT into clients (user_username) values (?)");
-                    preparedStatement.setString(1, username);
-                    if (preparedStatement.executeUpdate() == 0) {
-                        System.out.println("Problem");
-                        throw new SQLException();
-                    } else System.out.println("ADDED client");
-                    break;
-                }
-                case "seller": {
-                    PreparedStatement preparedStatement = connection.prepareStatement("INSERT into sellers (username) values (?)");
-                    preparedStatement.setString(1, username);
-                    if (preparedStatement.executeUpdate() == 0) {
-                        System.out.println("Problem");
-                        throw new SQLException();
-                    } else System.out.println("ADDED seller");
-
-                    break;
-                }
-                default:
-                    throw new SQLException();
+            PreparedStatement preparedStatement2 = connection.prepareStatement("INSERT into admin (username) values (?)");
+            preparedStatement2.setString(1, username);
+            if (preparedStatement2.executeUpdate() == 0) {
+                System.out.println("Problem");
+                throw new SQLException();
+            } else System.out.println("ADDED admin");
+        }catch(SQLException e) {
+            e.printStackTrace();
+            try {
+                PreparedStatement delStatement = connection.prepareStatement("DELETE FROM users WHERE username=?");
+                delStatement.setString(1, username);
+                delStatement.executeUpdate();
+            }catch (SQLException q){
+                e.printStackTrace();
             }
+            return false;
+        }
+        return true;
+    }
+
+    public boolean signupClient(String username, String name, String surname, String address, String afm, String phone, String password, String salt)
+    {
+        try {
+            PreparedStatement preparedStatement1 = connection.prepareStatement("INSERT into users (username, name, surname, type, password, salt) values (?,?,?,?,?,?)");
+            preparedStatement1.setString(1, username);
+            preparedStatement1.setString(2, name);
+            preparedStatement1.setString(3, surname);
+            preparedStatement1.setString(4, "client");
+            preparedStatement1.setString(5, password);
+            preparedStatement1.setString(6, salt);
+            if(preparedStatement1.executeUpdate() == 0){
+                System.out.println("Problem");
+            }else System.out.println("ADDED user");
+
+            PreparedStatement preparedStatement2 = connection.prepareStatement("INSERT into clients (user_username, address, phone_number, afm) values (?, ?, ?, ?)");
+            preparedStatement2.setString(1, username);
+            preparedStatement2.setString(2, address);
+            preparedStatement2.setString(3, phone);
+            preparedStatement2.setString(4, afm);
+            if (preparedStatement2.executeUpdate() == 0) {
+                System.out.println("Problem");
+                throw new SQLException();
+            } else System.out.println("ADDED client");
+        }catch(SQLException e) {
+            e.printStackTrace();
+            try {
+                PreparedStatement delStatement = connection.prepareStatement("DELETE FROM users WHERE username=?");
+                delStatement.setString(1, username);
+                delStatement.executeUpdate();
+            }catch (SQLException q){
+                e.printStackTrace();
+            }
+            return false;
+        }
+        return true;
+    }
+
+    public boolean signupSeller(String username, String name, String surname, String password, String salt)
+    {
+        try {
+            PreparedStatement preparedStatement1 = connection.prepareStatement("INSERT into users (username, name, surname, type, password, salt) values (?,?,?,?,?,?)");
+            preparedStatement1.setString(1, username);
+            preparedStatement1.setString(2, name);
+            preparedStatement1.setString(3, surname);
+            preparedStatement1.setString(4, "seller");
+            preparedStatement1.setString(5, password);
+            preparedStatement1.setString(6, salt);
+            if(preparedStatement1.executeUpdate() == 0){
+                System.out.println("Problem");
+            }else System.out.println("ADDED user");
+
+            PreparedStatement preparedStatement = connection.prepareStatement("INSERT into sellers (username) values (?)");
+            preparedStatement.setString(1, username);
+            if (preparedStatement.executeUpdate() == 0) {
+                System.out.println("Problem");
+                throw new SQLException();
+            } else System.out.println("ADDED seller");
         }catch(SQLException e) {
             e.printStackTrace();
             try {

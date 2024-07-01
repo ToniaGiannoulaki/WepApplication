@@ -60,11 +60,6 @@
                 </div>
                 <br>
                 <div class="group">
-                    <label for="type" class="label">Τύπος</label>
-                    <input id="type" type="text" name="type" class="input">
-                </div>
-                <br>
-                <div class="group">
                     <label for="address" class="label">Διεύθυνση</label>
                     <input id="address" type="text" name="address" class="input">
                 </div>

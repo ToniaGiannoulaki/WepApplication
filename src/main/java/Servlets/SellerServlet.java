@@ -6,9 +6,13 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.*;
 
 @WebServlet("/seller")
@@ -139,52 +143,36 @@ public class SellerServlet extends HttpServlet {
 
         if(request.getParameter("addClient") != null) //add client
         {
+            String salt=dao.getAlphaNumericString(16);
+
             String username = request.getParameter("username");
             String name = request.getParameter("name");
             String surname = request.getParameter("surname");
-            String type = request.getParameter("type");
             String address = request.getParameter("address");
             String afm = request.getParameter("AFM");
             String phone = request.getParameter("phoneNumber");
-            String password = request.getParameter("password");
+            String password=request.getParameter("password")+salt;
             String usernameValidation=dao.signupUsernameCheck(username); //check for duplicate username
 
             if (usernameValidation.equals("ok")){
+                MessageDigest digest;
                 try {
-                    PreparedStatement preparedStatement2 = connection
-                            .prepareStatement("INSERT INTO users (username, name, surname, type, password) " +
-                                    "VALUES (?, ?, ?, ?, ?)"); //insert user
-                    preparedStatement2.setString(1, username);
-                    preparedStatement2.setString(2, name);
-                    preparedStatement2.setString(3, surname);
-                    preparedStatement2.setString(4, type);
-                    preparedStatement2.setString(5, password);
-                    if (preparedStatement2.executeUpdate() != 1) {
-                        System.out.println("Problem with user insert");
-                        createDynPage(response, "Ο χρήστης δεν καταχωρήθηκε"); //debug message
-                    } else {
-                        PreparedStatement preparedStatement3 = connection
-                                .prepareStatement("INSERT INTO clients (user_username, address, phone_number, afm) " +
-                                        "VALUES (?, ?, ?, ?)"); //insert client
-                        preparedStatement3.setString(1, username);
-                        preparedStatement3.setString(2, address);
-                        preparedStatement3.setString(3, phone);
-                        preparedStatement3.setString(4, afm);
+                    digest = MessageDigest.getInstance("SHA-1");
+                    byte[] encodedHash = digest.digest(password.getBytes(StandardCharsets.UTF_8));
+                    password = dao.bytesToHex(encodedHash);
+                    System.out.println("pass = " + password); //set new hashed password
+                    boolean success = dao.signupClient(username, name, surname, address, afm, phone, password, salt); //add client
 
-                        if (preparedStatement3.executeUpdate() != 1) {
-                            PreparedStatement preparedStatement4 = connection
-                                    .prepareStatement("DELETE FROM users WHERE username=?"); //delete user
-                            preparedStatement4.setString(1, username);
-                            preparedStatement3.executeUpdate();
-                            System.out.println("Problem with client insert");
-                            createDynPage(response, "Ο πελάτης δεν καταχωρήθηκε"); //debug message
-                        }else{
-                            response.sendRedirect("seller.jsp");
-                        }
+                    if (!success) {
+                        System.out.println("Problem with user insert");
+                        createDynPage(response, "Ο πελάτης δεν καταχωρήθηκε"); //debug message
+                    } else {
+                        response.sendRedirect("seller.jsp");
                     }
-                } catch (SQLException e) {
+                }
+                catch (NoSuchAlgorithmException e)
+                {
                     e.printStackTrace();
-                    createDynPage(response, "Ο χρήστης δεν καταχωρήθηκε"); //debug message
                 }
             } else{
                 request.setAttribute("message", usernameValidation);
