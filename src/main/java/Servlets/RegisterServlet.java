@@ -33,9 +33,6 @@ public class RegisterServlet extends HttpServlet {
         String surname=request.getParameter("newsurname");
         String password=request.getParameter("newpassword1")+salt;
 
-        String role=request.getParameter("role");
-        System.out.println("Role = "+role);
-
         String usernamevalidation=dao.signupUsernameCheck(username); //check for duplicate username
 
         if (usernamevalidation.equals("ok"))
@@ -45,30 +42,17 @@ public class RegisterServlet extends HttpServlet {
                 digest = MessageDigest.getInstance("SHA-1");
                 byte[] encodedhash = digest.digest(password.getBytes(StandardCharsets.UTF_8));
                 password=dao.bytesToHex(encodedhash);
-                //password =""+password;
                 System.out.println("pass = "+ password); //set new hashed password
                 HttpSession session = request.getSession();
                 boolean success = dao.signupAdmin(username, name, surname, password, salt); //add user
 
                 if (success) {
                     synchronized (session) {
-
                         session.setAttribute("username", username);
-                        session.setAttribute("role", role);
-
-                        if (role.equals("admin")) {
-                            request.setAttribute("role", role);
-                            request.setAttribute("username", username);
-                            response.sendRedirect("admin.jsp");
-                        } else if (role.equals("client")) {
-                            request.setAttribute("role", role);
-                            request.setAttribute("username", username);
-                            response.sendRedirect("client.jsp");
-                        } else {
-                            request.setAttribute("role", role);
-                            request.setAttribute("username", username);
-                            response.sendRedirect("seller.jsp");
-                        }
+                        session.setAttribute("role", "admin");
+                        request.setAttribute("username", username);
+                        request.setAttribute("role", "admin");
+                        response.sendRedirect("admin.jsp");
                     }
                 }else
                 {

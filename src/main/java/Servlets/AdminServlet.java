@@ -54,7 +54,7 @@ public class AdminServlet extends HttpServlet {
                         System.out.println("Problem with user insert");
                         createDynPage(response, "Ο πωλητής δεν καταχωρήθηκε"); //debug message
                     } else {
-                        response.sendRedirect("seller.jsp");
+                        response.sendRedirect("admin.jsp");
                     }
                 }
                 catch (NoSuchAlgorithmException e)
