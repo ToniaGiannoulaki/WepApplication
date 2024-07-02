@@ -72,7 +72,7 @@ public class AdminServlet extends HttpServlet {
             } else{
                 request.setAttribute("message", usernameValidation);
                 request.setAttribute("user", username);
-                response.sendRedirect("seller.jsp");
+                response.sendRedirect("admin.jsp");
             }
         }else if(request.getParameter("addProgram") != null) {
 
@@ -84,26 +84,20 @@ public class AdminServlet extends HttpServlet {
 
             System.out.println("Received Data: program_name=" + program_name + ", charge=" + charge + ", data=" + data + ", sms=" + sms + ", minutes=" + minutes);
 
-            try (Connection connection = DBUtil.getConnection()) {
-                String sql = "INSERT INTO programs(program_name, charge, data, sms, minutes) VALUES (?, ?, ?, ?, ?)";
-                System.out.println("SQL Statement: " + sql);
+            try{
+                PreparedStatement preparedStatement1 = connection
+                        .prepareStatement("INSERT INTO programs(program_name, charge, data, sms, minutes) VALUES (?, ?, ?, ?, ?)");
+                preparedStatement1.setString(1, program_name);
+                preparedStatement1.setInt(2, charge);
+                preparedStatement1.setInt(3, data);
+                preparedStatement1.setInt(4, sms);
+                preparedStatement1.setInt(5, minutes);
 
-                try (PreparedStatement statement = connection.prepareStatement(sql)) {
-                    statement.setString(1, program_name);
-                    statement.setInt(2, charge);
-                    statement.setInt(3, data);
-                    statement.setInt(4, sms);
-                    statement.setInt(5, minutes);
-
-                    int rowsInserted = statement.executeUpdate();
-                    if (rowsInserted > 0) {
-                        System.out.println("A new program was inserted successfully!");
-                    } else {
-                        System.out.println("No rows inserted.");
-                    }
-                } catch (SQLException e) {
-                    System.err.println(e.getMessage());
-                    e.printStackTrace();
+                int rowsInserted = preparedStatement1.executeUpdate();
+                if (rowsInserted > 0) {
+                    System.out.println("A new program was inserted successfully!");
+                } else {
+                    System.out.println("No rows inserted.");
                 }
             } catch (SQLException e) {
                 System.err.println(e.getMessage());
@@ -120,32 +114,31 @@ public class AdminServlet extends HttpServlet {
             int sms = Integer.parseInt(request.getParameter("sms"));
             int minutes = Integer.parseInt(request.getParameter("minutes"));
 
-            try (Connection connection = DBUtil.getConnection()) {
-                String sql = "UPDATE programs SET charge = ?, data = ?, sms = ?, minutes = ? WHERE program_name = ?";
-                try (PreparedStatement statement = connection.prepareStatement(sql)) {
-                    statement.setInt(1, charge);
-                    statement.setInt(2, data);
-                    statement.setInt(3, sms);
-                    statement.setInt(4, minutes);
-                    statement.setString(5, programName);
+            try {
+                PreparedStatement preparedStatement1 = connection
+                        .prepareStatement("UPDATE programs SET charge = ?, data = ?, sms = ?, minutes = ? WHERE program_name = ?");
+                preparedStatement1.setInt(1, charge);
+                preparedStatement1.setInt(2, data);
+                preparedStatement1.setInt(3, sms);
+                preparedStatement1.setInt(4, minutes);
+                preparedStatement1.setString(5, programName);
 
-                    int rowsUpdated = statement.executeUpdate();
+                int rowsUpdated = preparedStatement1.executeUpdate();
 
-                    response.setContentType("text/html; charset=UTF-8");
-                    PrintWriter out = response.getWriter();
-                    out.println("<html>");
-                    out.println("<head><title>Update Program</title></head>");
-                    out.println("<body>");
-                    if (rowsUpdated > 0) {
-                        out.println("<p>Το πρόγραμμα ενημερώθηκε επιτυχώς.</p>");
-                        out.println("<a href=\"admin.jsp\">Επιστροφή στην αρχική σελίδα</a>");
-                    } else {
-                        out.println("<p>Το πρόγραμμα δεν βρέθηκε.</p>");
-                        out.println("<a href=\"admin.jsp\">Επιστροφή στην αρχική σελίδα</a>");
-                    }
-                    out.println("</body>");
-                    out.println("</html>");
+                response.setContentType("text/html; charset=UTF-8");
+                PrintWriter out = response.getWriter();
+                out.println("<html>");
+                out.println("<head><title>Update Program</title></head>");
+                out.println("<body>");
+                if (rowsUpdated > 0) {
+                    out.println("<p>Το πρόγραμμα ενημερώθηκε επιτυχώς.</p>");
+                    out.println("<a href=\"admin.jsp\">Επιστροφή στην αρχική σελίδα</a>");
+                } else {
+                    out.println("<p>Το πρόγραμμα δεν βρέθηκε.</p>");
+                    out.println("<a href=\"admin.jsp\">Επιστροφή στην αρχική σελίδα</a>");
                 }
+                out.println("</body>");
+                out.println("</html>");
             } catch (SQLException e) {
                 e.printStackTrace();
                 response.setContentType("text/html; charset=UTF-8");
