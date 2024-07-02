@@ -138,8 +138,10 @@ public class AdminServlet extends HttpServlet {
                     out.println("<body>");
                     if (rowsUpdated > 0) {
                         out.println("<p>Το πρόγραμμα ενημερώθηκε επιτυχώς.</p>");
+                        out.println("<a href=\"admin.jsp\">Επιστροφή στην αρχική σελίδα</a>");
                     } else {
                         out.println("<p>Το πρόγραμμα δεν βρέθηκε.</p>");
+                        out.println("<a href=\"admin.jsp\">Επιστροφή στην αρχική σελίδα</a>");
                     }
                     out.println("</body>");
                     out.println("</html>");
@@ -152,6 +154,7 @@ public class AdminServlet extends HttpServlet {
                 out.println("<head><title>Σφάλμα</title></head>");
                 out.println("<body>");
                 out.println("<p>Κάτι πήγε στραβά</p>");
+                out.println("<a href=\"admin.jsp\">Επιστροφή στην αρχική σελίδα</a>");
                 out.println("</body>");
                 out.println("</html>");
             }
@@ -185,7 +188,7 @@ public class AdminServlet extends HttpServlet {
             out.println("<tr><td>Λεπτά Ομιλίας:</td><td><input type='number' name='minutes'></td></tr>");
             out.println("</table>");
             out.println("<br>");
-            out.println("<input type='submit' value='Τροποποίηση προγράμματος'>");
+            out.println("<input type='submit' name='updateProgram' value='Τροποποίηση προγράμματος'>");
             out.println("</form>");
             out.println("</body>");
             out.println("</html>");

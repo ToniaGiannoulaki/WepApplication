@@ -129,11 +129,11 @@
                 <input type="submit" name="submitBill" class="button" value="Έκδοση λογαριασμού">
             </div>
             <br><br>
-            <form method="get" action="logout">
-                <input type="submit" class="button" value="Αποσύνδεση">
-            </form>
         </form>
     </div>
+    <form method="get" action="logout">
+        <input type="submit" class="button" value="Αποσύνδεση">
+    </form>
 </div>
 </body>
 </html>
