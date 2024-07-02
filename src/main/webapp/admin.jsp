@@ -32,15 +32,10 @@
             Welcome, <%= session.getAttribute("username") %>
         </div>
         <p style="font-size: 30px">Λειτουργίες Διαχειριστή</p>
-        <br><br><br>
-        <input style="font-size: 20px" type="submit" name="createSeller" value="Δημιουργία πωλητή"/>
-        <br><br>
-        <input style="font-size: 20px" type="submit" name="createProgram" value="Δημιουργία προγράμματος"/>
         <br><br>
         <input style="font-size: 20px" type="submit" name="changeProgram" value="Αλλαγή προγράμματος"/>
         <br><br><br>
     </form>
-
     <div class="seller-form">
         <h3>Έγγραφή νέου πωλητή</h3>
         <form action="admin" method="post">
@@ -71,7 +66,43 @@
             </div>
         </form>
     </div>
-
+    <br><br>
+    <div class="seller-form">
+        <h3>Δημιουργία Προγράμματος</h3>
+        <form action="admin" method="post">
+            <div class="sign-in-htm">
+                <div class="group">
+                    <label for="program_name" class="label">Πρόγραμμα</label>
+                    <input id="program_name" type="text" name="program_name" class="input">
+                </div>
+                <br>
+                <div class="group">
+                    <label for="charge" class="label">Χρέωση</label>
+                    <input id="charge" type="text" name="charge" class="input">
+                </div>
+                <br>
+                <div class="group">
+                    <label for="data" class="label">Δεδομένα</label>
+                    <input id="data" type="text" name="data" class="input">
+                </div>
+                <br>
+                <div class="group">
+                    <label for="sms" class="label">Μηνύματα</label>
+                    <input id="sms" type="text" name="sms" class="input">
+                </div>
+                <br>
+                <div class="group">
+                    <label for="minutes" class="label">Λεπτά Ομιλίας</label>
+                    <input id="minutes" type="text" name="minutes" class="input">
+                </div>
+                <br>
+                <div class="group">
+                    <input type="submit" name="addProgram" class="button" value="Δημιουργία νέου προγράμματος">
+                </div>
+            </div>
+        </form>
+    </div>
+    <br>
     <form method="get" action="logout">
         <input type="submit" class="button" value="Αποσύνδεση">
     </form>

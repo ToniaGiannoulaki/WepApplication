@@ -7,7 +7,7 @@ import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
 public class DBUtil {
-    private static Connection connection = null;
+    public static Connection connection = null;
     private static DataSource datasource = null;
 
     public static Connection getConnection() {

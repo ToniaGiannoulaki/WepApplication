@@ -86,9 +86,7 @@
         </form>
     </div>
     <br>
-    <form method="get" action="logout">
-        <input type="submit" class="button" value="Αποσύνδεση">
-    </form>
+
 
     <br><br>
     <div class="form-container">
@@ -101,30 +99,14 @@
             </div>
             <br>
             <div class="group">
-                <label for="clientName" class="label">Όνομα</label>
-                <input id="clientName" type="text" name="clientName" class="input">
-            </div>
-            <br>
-            <div class="group">
-                <label for="clientSurname" class="label">Επίθετο</label>
-                <input id="clientSurname" type="text" name="clientSurname" class="input">
-            </div>
-            <br>
-            <div class="group">
-                <label for="AFM" class="label">ΑΦΜ</label>
-                <input id="clientAFM" type="text" name="clientAFM" class="input">
+                <label for="phoneNum" class="label">Τηλέφωνο</label>
+                <input id="phoneNum" type="text" name="phoneNum" class="input">
             </div>
             <br>
             <div class="group">
                 <label for="programName" class="label">Όνομα Προγράμματος</label>
                 <input id="programName" type="text" name="programName" class="input">
             </div>
-            <br>
-            <div class="group">
-                <label for="phoneNum" class="label">Τηλέφωνο</label>
-                <input id="phoneNum" type="text" name="phoneNum" class="input">
-            </div>
-            <br>
             <div class="group">
                 <label for="month" class="label">Μήνας</label>
                 <input id="month" type="text" name="month" class="input">
@@ -146,7 +128,10 @@
             <div class="group">
                 <input type="submit" name="submitBill" class="button" value="Έκδοση λογαριασμού">
             </div>
-            <br>
+            <br><br>
+            <form method="get" action="logout">
+                <input type="submit" class="button" value="Αποσύνδεση">
+            </form>
         </form>
     </div>
 </div>

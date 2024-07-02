@@ -67,8 +67,72 @@ public class ClientServlet extends HttpServlet{
 
         } else if(request.getParameter("payBill") != null){
             PrintWriter out = response.getWriter();
+            out.println("<html>");
+            out.println("<head><title>Λογαριασμός</title> </head>");
+            out.println("<body style=\"text-align: center; font-size: 20px;\"");
+            createDynPage(response, "Λογαριασμός");
+            out.println("<table style=\"text-align: center; margin-left: auto; margin-right: auto\"  border=\"1\">");
+            out.println("<tr>");
+            out.println("<th>Λογαριασμός</th>");
+            out.println("<th>Χρέωση</th>");
+            out.println("<th>Τηλέφωνο</th>");
+            out.println("<th>Μήνας</th>");
+            out.println("<th>Πληρωμένο</th>");
+            out.println("</tr>");
+            PreparedStatement preparedStatement1 = null; //find program info
+            try {
+                preparedStatement1 = connection
+                        .prepareStatement("SELECT username, phone, program_name, month, charge, paid FROM bills");
+                ResultSet rs1 = preparedStatement1.executeQuery();
+                while (rs1.next()) { //if DB returns data - until data ends
+                    String username = rs1.getString("username");
+                    String phone = rs1.getString("phone");
+                    String program_name = rs1.getString("program name");
+                    String month = rs1.getString("month");
+                    String charge = rs1.getString("charge");
+                    boolean paid = rs1.getBoolean("paid");
+
+                    String htmlRow = createHTMLRowBills(username, phone, program_name, month, charge, paid); // html table with all the data
+                    out.println(htmlRow);
+                }
+                rs1.close();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+
+
         } else if(request.getParameter("showHistory") != null){
             PrintWriter out = response.getWriter();
+            out.println("<html>");
+            out.println("<head><title>Ιστορικό κλήσεων</title> </head>");
+            out.println("<body style=\"text-align: center; font-size: 20px;\"");
+            createDynPage(response, "Ιστορικό κλήσεων");
+            out.println("<table style=\"text-align: center; margin-left: auto; margin-right: auto\"  border=\"1\">");
+            out.println("<tr>");
+            out.println("<th></th>");
+            out.println("<th>Έναρξη κλήσης</th>");
+            out.println("<th>Τερματισμός κλήσης</th>");
+            out.println("<th>Διάρκεια κλήσης</th>");
+            out.println("<th>Ημερομηνία</th>");
+            out.println("</tr>");
+            PreparedStatement preparedStatement1 = null; //find program info
+            try {
+                preparedStatement1 = connection
+                        .prepareStatement("SELECT startTime, endTime, duration, date FROM calls");
+                ResultSet rs1 = preparedStatement1.executeQuery();
+                while (rs1.next()) { //if DB returns data - until data ends
+                    String startTime = rs1.getString("startTime");
+                    String endTime = rs1.getString("endTime");
+                    String duration = rs1.getString("duration");
+                    String date = rs1.getString("date");
+
+                    String htmlRow = createHTMLRowCalls(startTime,endTime, duration, date); // html table with all the data
+                    out.println(htmlRow);
+                }
+                rs1.close();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
@@ -84,6 +148,36 @@ public class ClientServlet extends HttpServlet{
         return row;
     }
 
+    private String createHTMLRowBills(String username, String phone, String program_name, String month, String charge, boolean paid){
+        String row = "<tr>";
+        row  += "<td>" + username + "</td>";
+        row  += "<td>" + phone + "</td>";
+        row  += "<td>" + program_name + "</td>";
+        row  += "<td>" + month + "</td>";
+        row  += "<td>" + charge + "</td>";
+        row +="</tr>";
+        if (paid) {
+            row += "Paid";
+        } else {
+            row += "<button onclick=\"confirmPayment('" + username + "','" + phone + "','" + month + "')\">Pay</button>";
+        }
+        row += "</td>";
+        row += "</tr>";
+        return row;
+    }
+
+    private String createHTMLRowCalls(String startTime, String endTime, String duration, String date) //create table for programs
+    {
+        String row = "<tr>";
+        row  += "<td>" + startTime + "</td>";
+        row  += "<td>" + endTime + "</td>";
+        row  += "<td>" + duration + "</td>";
+        row  += "<td>" + date + "</td>";
+        row +="</tr>";
+        return row;
+    }
+
+
     private void createDynPage(HttpServletResponse response, String message) throws IOException { //dynamic page method
         response.setContentType("text/html; charset=UTF-8");
         response.setCharacterEncoding("UTF-8");
@@ -92,7 +186,7 @@ public class ClientServlet extends HttpServlet{
         out.println("<head><title>" + message + "</title></head>");
         out.println("<body style=\"text-align: center\">");
         out.println("<p>" + message + "</p>");
-        out.println("<a href=\"seller.jsp\">Επιστροφή στην αρχική σελίδα</a>");
+        out.println("<a href=\"client.jsp\">Επιστροφή στην αρχική σελίδα</a>");
         out.println("<br><br>");
         out.println("</body></html>");
     }
