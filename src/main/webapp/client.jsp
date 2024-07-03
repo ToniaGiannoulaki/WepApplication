@@ -33,11 +33,9 @@
         </div>
         <p style="font-size: 30px">Λειτουργίες Πελάτη</p>
         <br><br><br>
-        <input style="font-size: 20px" type="submit" name="showBill" value="Προβολή λογαριασμού"/>
+        <input style="font-size: 20px" type="submit" name="showBills" value="Προβολή λογαριασμού"/>
         <br><br>
         <input style="font-size: 20px" type="submit" name="showHistory" value="Προβολή ιστορικού κλήσεων"/>
-        <br><br>
-        <input style="font-size: 20px" type="submit" name="payBill" value="Εξόφληση λογαριασμού"/>
         <br><br>
     </form>
     <form method="get" action="logout">
