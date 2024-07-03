@@ -136,15 +136,15 @@ public class ClientServlet extends HttpServlet{
 
                 int rowsUpdated = preparedStatement1.executeUpdate();
                 if (rowsUpdated > 0) {
-                    response.sendRedirect("client.jsp");
+                    request.setAttribute("showBills", "showBills");
+                    doGet(request, response);
                 } else {
-                    //something went wrong page with back
+                    createDynPage(response, "Ο λογαριασμός δεν πληρώθηκε");
                 }
             } catch (SQLException e) {
                 System.err.println(e.getMessage());
                 e.printStackTrace();
             }
-            response.sendRedirect("client.jsp");
         }
     }
 
