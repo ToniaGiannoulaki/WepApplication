@@ -199,30 +199,27 @@ public class SellerServlet extends HttpServlet {
                 createDynPage(response, "Η αντιστοίχηση δεν ήταν επιτυχής"); //debug message
             }
         } else if (request.getParameter("submitBill") != null) {
-            String clientUsername = request.getParameter("clientUsername");
-            String clientName = request.getParameter("clientName");
-            String clientSurname = request.getParameter("clientSurname");
-            String clientAFM = request.getParameter("clientAFM");
-            String programName = request.getParameter("programName");
+
+            String username = request.getParameter("clientUsername");
+            String phone = request.getParameter("phoneNum");
+            String program_name = request.getParameter("programName");
             String month = request.getParameter("month");
             int charge = Integer.parseInt(request.getParameter("charge"));
             boolean paid = request.getParameter("paid").equals("Yes");
 
             try {
-                PreparedStatement pst = connection.prepareStatement("INSERT INTO bills (username, name, surname, afm, program_name, month, charge, paid) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-                pst.setString(1, clientUsername);
-                pst.setString(2, clientName);
-                pst.setString(3, clientSurname);
-                pst.setString(4, clientAFM);
-                pst.setString(5, programName);
-                pst.setString(6, month);
-                pst.setInt(7, charge);
-                pst.setBoolean(8, paid);
+                PreparedStatement pst = connection.prepareStatement("INSERT INTO bills (username, phone, program_name, month, charge, paid) VALUES (?, ?, ?, ?, ?, ?)");
+                pst.setString(1, username);
+                pst.setString(2, phone);
+                pst.setString(3, program_name);
+                pst.setString(4, month);
+                pst.setInt(5, charge);
+                pst.setBoolean(6, paid);
                 pst.executeUpdate();
-                response.sendRedirect("seller?sendBillSuccess=true");
+                response.sendRedirect("seller.jsp");
             } catch (SQLException e) {
                 e.printStackTrace();
-                response.sendRedirect("seller?sendBillError=true");
+                response.sendRedirect("seller.jsp");
             }
         }
     }

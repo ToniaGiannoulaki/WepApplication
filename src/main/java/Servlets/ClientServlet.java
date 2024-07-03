@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.*;
 
+import static Utilities.DBUtil.connection;
+
 @WebServlet("/client")
 public class ClientServlet extends HttpServlet{
 
@@ -31,39 +33,64 @@ public class ClientServlet extends HttpServlet{
         request.setCharacterEncoding("UTF-8");
 
         if (request.getParameter("showBill") != null){
+
             PrintWriter out = response.getWriter();
             out.println("<html>");
             out.println("<head><title>Λογαριασμός</title> </head>");
             out.println("<body style=\"text-align: center; font-size: 20px\"");
             createDynPage(response, "Λογαριασμός");
-            try { //creating table in dyn page
-                out.println("<table style=\"text-align: center; margin-left: auto; margin-right: auto\"  border=\"1\">");
-                out.println("<tr>");
-                out.println("<th>Όνομα Προγράμματος Τηλεφωνίας</th>");
-                out.println("<th>Χρέωση</th>");
-                out.println("<th>Δεδομένα</th>");
-                out.println("<th>Μηνύματα</th>");
-                out.println("<th>Λεπτά Ομιλίας</th>");
-                out.println("</tr>");
+            out.println("<table style=\"text-align: center; margin-left: auto; margin-right: auto\"  border=\"1\">");
+            out.println("<tr>");
+            out.println("<th>Όνομα χρήστη</th>");
+            out.println("<th>Τηλέφωνο</th>");
+            out.println("<th>Πρόγραμμα τηλεφωνίας</th>");
+            out.println("<th>Μήνας</th>");
+            out.println("<th>Χρέωση</th>");
+            out.println("<th>Πληρωμένο</th>");
+            out.println("</tr>");
 
-                PreparedStatement preparedStatement1 = connection
-                        .prepareStatement("SELECT program_name, charge, data, sms, minutes FROM programs"); //find program info
-                ResultSet rs1 = preparedStatement1.executeQuery();
-                while (rs1.next()) { //if DB returns data - until data ends
-                    String programName = rs1.getString("program_name");
-                    int charge = rs1.getInt("charge");
-                    int data = rs1.getInt("data");
-                    int sms = rs1.getInt("sms");
-                    int minutes = rs1.getInt("minutes");
-
-                    String htmlRow = createHTMLRowPrograms(programName, charge, data, sms, minutes); // html table with all the data
-                    out.println(htmlRow);
+            try {
+                String specificUsername = request.getParameter("username");
+                if (specificUsername == null || specificUsername.isEmpty()) {
+                    specificUsername = (String) request.getSession().getAttribute("username");
                 }
-                rs1.close();
+                System.out.println("Retrieved username: " + specificUsername);
+
+                if (specificUsername == null || specificUsername.isEmpty()) {
+                    out.println("<p style=\"font-size: 25px\"> Username is missing </p>");
+                } else {
+                    PreparedStatement preparedStatement1 = connection.prepareStatement(
+                            "SELECT id, username, phone, program_name, month, charge, paid FROM bills WHERE username = ?"
+                    );
+                    preparedStatement1.setString(1, specificUsername); // Set the username parameter
+
+                    ResultSet rs1 = preparedStatement1.executeQuery();
+                    boolean hasResults = false; // Track if any results are returned
+                    while (rs1.next()) { // if DB returns data - until data ends
+                        hasResults = true; // Mark that we have results
+                        // Retrieve and print the ID for debugging purposes
+                        int id = rs1.getInt("id");
+                        String username = rs1.getString("username");
+                        String phone = rs1.getString("phone");
+                        String program_name = rs1.getString("program_name");
+                        String month = rs1.getString("month");
+                        int charge = rs1.getInt("charge");
+                        boolean paid = rs1.getBoolean("paid");
+
+                        System.out.println("Retrieved row - ID: " + id + ", Username: " + username);
+
+                        String htmlRow = createHTMLRowShowBills(username, phone, program_name, month, charge, paid);
+                        out.println(htmlRow);
+                    }
+                    rs1.close();
+                    preparedStatement1.close();
+                }
             } catch (SQLException e) {
                 e.printStackTrace();
-                out.println("<p style=\"font-size: 25px\"> Something went wrong </p>"); //debug message
+                out.println("<p style=\"font-size: 25px\"> Something went wrong </p>"); // Debugging message
             }
+            out.println("</body></html>");
+            out.close();
 
         } else if(request.getParameter("payBill") != null){
             PrintWriter out = response.getWriter();
@@ -73,33 +100,52 @@ public class ClientServlet extends HttpServlet{
             createDynPage(response, "Λογαριασμός");
             out.println("<table style=\"text-align: center; margin-left: auto; margin-right: auto\"  border=\"1\">");
             out.println("<tr>");
-            out.println("<th>Λογαριασμός</th>");
-            out.println("<th>Χρέωση</th>");
+            out.println("<th>Όνομα χρήστη</th>");
             out.println("<th>Τηλέφωνο</th>");
+            out.println("<th>Πρόγραμμα</th>");
             out.println("<th>Μήνας</th>");
-            out.println("<th>Πληρωμένο</th>");
+            out.println("<th>Χρέωση</th>");
+            out.println("<th>Πληρωμή</th>");
             out.println("</tr>");
-            PreparedStatement preparedStatement1 = null; //find program info
             try {
-                preparedStatement1 = connection
-                        .prepareStatement("SELECT username, phone, program_name, month, charge, paid FROM bills");
-                ResultSet rs1 = preparedStatement1.executeQuery();
-                while (rs1.next()) { //if DB returns data - until data ends
-                    String username = rs1.getString("username");
-                    String phone = rs1.getString("phone");
-                    String program_name = rs1.getString("program name");
-                    String month = rs1.getString("month");
-                    String charge = rs1.getString("charge");
-                    boolean paid = rs1.getBoolean("paid");
-
-                    String htmlRow = createHTMLRowBills(username, phone, program_name, month, charge, paid); // html table with all the data
-                    out.println(htmlRow);
+                String specificUsername = request.getParameter("username");
+                if (specificUsername == null || specificUsername.isEmpty()) {
+                    specificUsername = (String) request.getSession().getAttribute("username");
                 }
-                rs1.close();
+                System.out.println("Retrieved username: " + specificUsername);
+
+                if (specificUsername == null || specificUsername.isEmpty()) {
+                    out.println("<p style=\"font-size: 25px\"> Username is missing </p>");
+                } else {
+                    PreparedStatement preparedStatement1 = connection.prepareStatement(
+                            "SELECT id, username, phone, program_name, month, charge, paid FROM bills WHERE username = ?"
+                    );
+                    preparedStatement1.setString(1, specificUsername); // Set the username parameter
+
+                    ResultSet rs1 = preparedStatement1.executeQuery();
+                    boolean hasResults = false; // Track if any results are returned
+                    while (rs1.next()) { // if DB returns data - until data ends
+                        hasResults = true; // Mark that we have results
+                        // Retrieve and print the ID for debugging purposes
+                        int id = rs1.getInt("id");
+                        String username = rs1.getString("username");
+                        String phone = rs1.getString("phone");
+                        String program_name = rs1.getString("program_name");
+                        String month = rs1.getString("month");
+                        int charge = rs1.getInt("charge");
+                        boolean paid = rs1.getBoolean("paid");
+
+                        System.out.println("Retrieved row - ID: " + id + ", Username: " + username);
+
+                        String htmlBill = createHTMLRowPayBills(username, phone, program_name, month, charge, paid);
+                        out.println(htmlBill);
+                    }
+                    rs1.close();
+                    preparedStatement1.close();
+                }
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
-
 
         } else if(request.getParameter("showHistory") != null){
             PrintWriter out = response.getWriter();
@@ -109,7 +155,6 @@ public class ClientServlet extends HttpServlet{
             createDynPage(response, "Ιστορικό κλήσεων");
             out.println("<table style=\"text-align: center; margin-left: auto; margin-right: auto\"  border=\"1\">");
             out.println("<tr>");
-            out.println("<th></th>");
             out.println("<th>Έναρξη κλήσης</th>");
             out.println("<th>Τερματισμός κλήσης</th>");
             out.println("<th>Διάρκεια κλήσης</th>");
@@ -136,34 +181,49 @@ public class ClientServlet extends HttpServlet{
         }
     }
 
-    private String createHTMLRowPrograms(String programName, int charge, int data, int sms, int minutes) //create table for programs
-    {
-        String row = "<tr>";
-        row  += "<td>" + programName + "</td>";
-        row  += "<td>" + charge + "</td>";
-        row  += "<td>" + data + "</td>";
-        row  += "<td>" + sms + "</td>";
-        row  += "<td>" + minutes + "</td>";
-        row +="</tr>";
+    private String createHTMLRowPayBills(String username, String phone, String program_name, String month, int charge, boolean paid){
+        // Initialize the row variable
+        String row = "<tr>" +
+                "<td>" + username + "</td>" +
+                "<td>" + phone + "</td>" +
+                "<td>" + program_name + "</td>" +
+                "<td>" + month + "</td>" +
+                "<td>" + charge + "</td>" +
+                "<td>";
+
+        // Add appropriate content based on the paid status
+        if (paid) {
+            row += "Πληρωμένο";
+        } else {
+            row += "<button onclick=\"confirmPayment('" + username + "','" + phone + "','" + month + "')\">Πλήρωσε</button>";
+            try {
+                PreparedStatement preparedStatement1 = connection
+                        .prepareStatement("UPDATE bills SET paid = 'yes' WHERE username = ? AND phone = ? AND program_name = ? AND month = ? AND charge = ?");
+                preparedStatement1.setString(1, username);
+                preparedStatement1.setString(2, phone);
+                preparedStatement1.setString(3, program_name);
+                preparedStatement1.setString(4, month);
+                preparedStatement1.setInt(4, charge);
+                preparedStatement1.setBoolean(5, paid);
+            }catch (SQLException e){
+
+            }
+        }
+        // Close the last cell and the row
+        row += "</td></tr>";
         return row;
+
     }
 
-    private String createHTMLRowBills(String username, String phone, String program_name, String month, String charge, boolean paid){
-        String row = "<tr>";
-        row  += "<td>" + username + "</td>";
-        row  += "<td>" + phone + "</td>";
-        row  += "<td>" + program_name + "</td>";
-        row  += "<td>" + month + "</td>";
-        row  += "<td>" + charge + "</td>";
-        row +="</tr>";
-        if (paid) {
-            row += "Paid";
-        } else {
-            row += "<button onclick=\"confirmPayment('" + username + "','" + phone + "','" + month + "')\">Pay</button>";
-        }
-        row += "</td>";
-        row += "</tr>";
-        return row;
+    private String createHTMLRowShowBills(String username, String phone, String program_name, String month, int charge, boolean paid){
+        return "<tr>" +
+                "<td>" + username + "</td>" +
+                "<td>" + phone + "</td>" +
+                "<td>" + program_name + "</td>" +
+                "<td>" + month + "</td>" +
+                "<td>" + charge + "</td>" +
+                "<td>" + (paid ? "Ναι" : "Οχι") + "</td>" +
+                "</tr>";
     }
 
     private String createHTMLRowCalls(String startTime, String endTime, String duration, String date) //create table for programs
@@ -191,5 +251,8 @@ public class ClientServlet extends HttpServlet{
         out.println("</body></html>");
     }
 
+    private void Bills (String resp, String req){
+
+    }
 }
 

@@ -107,6 +107,7 @@
                 <label for="programName" class="label">Όνομα Προγράμματος</label>
                 <input id="programName" type="text" name="programName" class="input">
             </div>
+            <br>
             <div class="group">
                 <label for="month" class="label">Μήνας</label>
                 <input id="month" type="text" name="month" class="input">

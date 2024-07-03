@@ -1,7 +1,6 @@
 package Servlets;
 
 import Dao.SystemDao;
-import Utilities.DBUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -13,9 +12,7 @@ import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import static Utilities.DBUtil.connection;
@@ -125,34 +122,16 @@ public class AdminServlet extends HttpServlet {
 
                 int rowsUpdated = preparedStatement1.executeUpdate();
 
-                response.setContentType("text/html; charset=UTF-8");
-                PrintWriter out = response.getWriter();
-                out.println("<html>");
-                out.println("<head><title>Update Program</title></head>");
-                out.println("<body>");
                 if (rowsUpdated > 0) {
-                    out.println("<p>Το πρόγραμμα ενημερώθηκε επιτυχώς.</p>");
-                    out.println("<a href=\"admin.jsp\">Επιστροφή στην αρχική σελίδα</a>");
+                    response.sendRedirect("admin.jsp");
                 } else {
-                    out.println("<p>Το πρόγραμμα δεν βρέθηκε.</p>");
-                    out.println("<a href=\"admin.jsp\">Επιστροφή στην αρχική σελίδα</a>");
+                    response.sendRedirect("admin.jsp");
                 }
-                out.println("</body>");
-                out.println("</html>");
             } catch (SQLException e) {
                 e.printStackTrace();
-                response.setContentType("text/html; charset=UTF-8");
-                PrintWriter out = response.getWriter();
-                out.println("<html>");
-                out.println("<head><title>Σφάλμα</title></head>");
-                out.println("<body>");
-                out.println("<p>Κάτι πήγε στραβά</p>");
-                out.println("<a href=\"admin.jsp\">Επιστροφή στην αρχική σελίδα</a>");
-                out.println("</body>");
-                out.println("</html>");
+                response.sendRedirect("admin.jsp");
             }
         }
-
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -171,6 +150,7 @@ public class AdminServlet extends HttpServlet {
             out.println("<body style=\"text-align: center; font-size: 20px\">");
 
             out.println("<h3>Τροποποίηση προγράμματος</h3>");
+            createDynPage(response,"<br>");
             out.println("<form action='admin' method='post'>");  // Form action points to the same servlet
             out.println("<input type='hidden' name='updateProgram' value='true'>");  // Hidden input to identify update action
             out.println("<table style=\"text-align: center; margin-left: auto; margin-right: auto\" border=\"1\">");
