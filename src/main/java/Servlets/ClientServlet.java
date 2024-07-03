@@ -34,6 +34,7 @@ public class ClientServlet extends HttpServlet{
 
         if (request.getParameter("showBill") != null){
 
+
             PrintWriter out = response.getWriter();
             out.println("<html>");
             out.println("<head><title>Λογαριασμός</title> </head>");
