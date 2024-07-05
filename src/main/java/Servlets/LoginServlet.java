@@ -16,8 +16,7 @@ public class LoginServlet extends HttpServlet {
 
     SystemDao dao = new SystemDao(); //get login validator instance
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws IOException, ServletException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 
         response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
         response.setHeader("Pragma", "no-cache");
@@ -31,8 +30,7 @@ public class LoginServlet extends HttpServlet {
             request.setAttribute("message", unamevalidation);
             request.setAttribute("username", username);
             response.sendRedirect("index.jsp");
-        } else
-        {
+        } else {
             System.out.println("PASS CHECK");
             password = password + dao.getSalt(username);
             MessageDigest digest;
@@ -42,42 +40,35 @@ public class LoginServlet extends HttpServlet {
                 password=dao.bytesToHex(encodedhash);
                 String passwordvalidation=dao.loginPasswordCheck(username, password);
 
-                if (passwordvalidation.equals("You logged in!"))
-                {
+                if (passwordvalidation.equals("You logged in!")) {
                     System.out.println("You logged in!");
                     String role=dao.getRole(username);
                     System.out.println("ROLE ===== "+role);
                     HttpSession session = request.getSession(true);
-                    synchronized(session)
-                    {
+                    synchronized(session) {
                         session.setAttribute("username", username);
                         session.setAttribute("role", role);
 
-                        if (role.equals("seller"))
-                        {
+                        if (role.equals("seller")) {
                             System.out.println("INSIDE role SELLER !");
                             request.setAttribute("username", username);
                             request.setAttribute("role", role);
                             response.sendRedirect("seller.jsp");
                         }
-                        else if (role.equals("client"))
-                        {
+                        else if (role.equals("client")) {
                             System.out.println("INSIDE role CLIENT !");
                             request.setAttribute("username", username);
                             request.setAttribute("role", role);
                             response.sendRedirect("client.jsp");
                         }
-                        else if (role.equals("admin"))
-                        {
+                        else if (role.equals("admin")) {
                             System.out.println("INSIDE role ADMIN !");
                             request.setAttribute("username", username);
                             request.setAttribute("role", role);
                             response.sendRedirect("admin.jsp");
                         }
                     }
-                }
-                else
-                {
+                } else {
                     request.setAttribute("message", passwordvalidation);
                     response.sendRedirect("index.jsp");
                 }

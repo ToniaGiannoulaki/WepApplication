@@ -36,7 +36,11 @@ public class AdminServlet extends HttpServlet {
         response.setHeader("Pragma", "no-cache");
         response.setDateHeader("Expires", 0); //restrict caching
 
-        if(request.getParameter("addSeller") != null) //add client
+        ////////////////////////////////////////////////////////////////
+        ////////////////////// ADD NEW SELLER //////////////////////////
+        ////////////////////////////////////////////////////////////////
+
+        if(request.getParameter("addSeller") != null)
         {
             String salt=dao.getAlphaNumericString(16);
 
@@ -71,15 +75,19 @@ public class AdminServlet extends HttpServlet {
                 request.setAttribute("user", username);
                 response.sendRedirect("admin.jsp");
             }
-        }else if(request.getParameter("addProgram") != null) {
+        }
+
+        ////////////////////////////////////////////////////////////////
+        ////////////////////// ADD NEW PROGRAM /////////////////////////
+        ////////////////////////////////////////////////////////////////
+
+         else if(request.getParameter("addProgram") != null) {
 
             String program_name = request.getParameter("program_name");
             int charge = Integer.parseInt(request.getParameter("charge"));
             int data = Integer.parseInt(request.getParameter("data"));
             int sms = Integer.parseInt(request.getParameter("sms"));
             int minutes = Integer.parseInt(request.getParameter("minutes"));
-
-            System.out.println("Received Data: program_name=" + program_name + ", charge=" + charge + ", data=" + data + ", sms=" + sms + ", minutes=" + minutes);
 
             try{
                 PreparedStatement preparedStatement1 = connection
@@ -91,6 +99,7 @@ public class AdminServlet extends HttpServlet {
                 preparedStatement1.setInt(5, minutes);
 
                 int rowsInserted = preparedStatement1.executeUpdate();
+
                 if (rowsInserted > 0) {
                     System.out.println("A new program was inserted successfully!");
                 } else {
@@ -101,8 +110,13 @@ public class AdminServlet extends HttpServlet {
                 e.printStackTrace();
             }
             // Redirect to a success page after insertion
-            response.sendRedirect("admin.jsp");  // Redirect to a success page after insertion
+            response.sendRedirect("admin.jsp");
         }
+
+        ////////////////////////////////////////////////////////////////
+        ////////////////////// CHANGE PROGRAM //////////////////////////
+        ////////////////////////////////////////////////////////////////
+
         else if (request.getParameter("updateProgram") != null) {
             // Handle program update
             String programName = request.getParameter("programName");
@@ -143,6 +157,10 @@ public class AdminServlet extends HttpServlet {
         response.setCharacterEncoding("UTF-8");
         request.setCharacterEncoding("UTF-8");
 
+        ////////////////////////////////////////////////////////////////
+        ////////////////////// CHANGE PROGRAM //////////////////////////
+        ////////////////////////////////////////////////////////////////
+
         if (request.getParameter("changeProgram") != null){
             PrintWriter out = response.getWriter();
             out.println("<html>");
@@ -168,6 +186,7 @@ public class AdminServlet extends HttpServlet {
         }
     }
 
+    ////////////////////////////// CREATE A DYNAMIC PAGE //////////////////////////////////
     private void createDynPage(HttpServletResponse response, String message) throws IOException { //dynamic page method
         response.setContentType("text/html; charset=UTF-8");
         response.setCharacterEncoding("UTF-8");

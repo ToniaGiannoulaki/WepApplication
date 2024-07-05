@@ -37,6 +37,10 @@ public class SellerServlet extends HttpServlet {
         response.setCharacterEncoding("UTF-8");
         request.setCharacterEncoding("UTF-8");
 
+        ////////////////////////////////////////////////////////////////
+        ////////////////////// SHOW ALL PROGRAMS ///////////////////////
+        ////////////////////////////////////////////////////////////////
+
         if (request.getParameter("showOffers") != null) //show offers button actions
         {
             PrintWriter out = response.getWriter();
@@ -44,7 +48,7 @@ public class SellerServlet extends HttpServlet {
             out.println("<head><title>Προγράμματα</title> </head>");
             out.println("<body style=\"text-align: center; font-size: 20px\"");
             createDynPage(response, "Προγράμματα");
-            try { //creating table in dyn page
+            try {
                 out.println("<table style=\"text-align: center; margin-left: auto; margin-right: auto\"  border=\"1\">");
                 out.println("<tr>");
                 out.println("<th>Όνομα Προγράμματος Τηλεφωνίας</th>");
@@ -55,7 +59,7 @@ public class SellerServlet extends HttpServlet {
                 out.println("</tr>");
 
                 PreparedStatement preparedStatement1 = connection
-                        .prepareStatement("SELECT program_name, charge, data, sms, minutes FROM programs"); //find program info
+                        .prepareStatement("SELECT program_name, charge, data, sms, minutes FROM programs");
                 ResultSet rs1 = preparedStatement1.executeQuery();
                 while (rs1.next()) { //if DB returns data - until data ends
                     String programName = rs1.getString("program_name");
@@ -70,8 +74,12 @@ public class SellerServlet extends HttpServlet {
                 rs1.close();
             } catch (SQLException e) {
                 e.printStackTrace();
-                out.println("<p style=\"font-size: 25px\"> Something went wrong </p>"); //debug message
             }
+
+        ////////////////////////////////////////////////////////////////
+        ///////////////// CHOOSE CLIENT'S PROGRAM //////////////////////
+        ////////////////////////////////////////////////////////////////
+
         }else if(request.getParameter("clientToOffer") != null) {
             PrintWriter out = response.getWriter();
             out.println("<html>");
@@ -123,7 +131,13 @@ public class SellerServlet extends HttpServlet {
                 e.printStackTrace();
                 out.println("<p style=\"font-size: 25px\"> Something went wrong </p>"); //debug message
             }
-        }else if(request.getParameter("sendBill") != null) {
+        }
+
+        ////////////////////////////////////////////////////////////////
+        ///////////////////////// SEND BILL ////////////////////////////
+        ////////////////////////////////////////////////////////////////
+
+        else if(request.getParameter("sendBill") != null) {
             PrintWriter out = response.getWriter();
             out.println("<html>");
             out.println("<head><title>Έκδοση Λογαριασμού</title> </head>");
@@ -140,6 +154,10 @@ public class SellerServlet extends HttpServlet {
         response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
         response.setHeader("Pragma", "no-cache");
         response.setDateHeader("Expires", 0); //restrict caching
+
+        ////////////////////////////////////////////////////////////////
+        //////////////////////// ADD CLIENT ////////////////////////////
+        ////////////////////////////////////////////////////////////////
 
         if(request.getParameter("addClient") != null) //add client
         {
@@ -179,7 +197,13 @@ public class SellerServlet extends HttpServlet {
                 request.setAttribute("user", username);
                 response.sendRedirect("seller.jsp");
             }
-        }else if(request.getParameter("assignProgram") != null){
+        }
+
+        ////////////////////////////////////////////////////////////////
+        ///////////////// CHOOSE CLIENT'S PROGRAM //////////////////////
+        ////////////////////////////////////////////////////////////////
+
+        else if(request.getParameter("assignProgram") != null){
             String username = request.getParameter("username");
             String programName = request.getParameter("programName");
 
@@ -198,7 +222,13 @@ public class SellerServlet extends HttpServlet {
                 e.printStackTrace();
                 createDynPage(response, "Η αντιστοίχηση δεν ήταν επιτυχής"); //debug message
             }
-        } else if (request.getParameter("submitBill") != null) {
+        }
+
+        ////////////////////////////////////////////////////////////////
+        ///////////////////////// SEND BILL ////////////////////////////
+        ////////////////////////////////////////////////////////////////
+
+        else if (request.getParameter("submitBill") != null) {
 
             String username = request.getParameter("clientUsername");
             String phone = request.getParameter("phoneNum");
@@ -224,7 +254,8 @@ public class SellerServlet extends HttpServlet {
         }
     }
 
-    private String createHTMLRowClients(String name, String afm, String phoneNumber, String username, String programName) //create table for clients
+    ////////////////////////////// CREATE TABLE FOR CLIENTS //////////////////////////////////
+    private String createHTMLRowClients(String name, String afm, String phoneNumber, String username, String programName)
     {
         String row = "<tr>";
         row  += "<td>" + name + "</td>";
@@ -236,7 +267,8 @@ public class SellerServlet extends HttpServlet {
         return row;
     }
 
-    private String createHTMLRowPrograms(String programName, int charge, int data, int sms, int minutes) //create table for programs
+    ////////////////////////////// CREATE TABLE FOR PROGRAMS //////////////////////////////////
+    private String createHTMLRowPrograms(String programName, int charge, int data, int sms, int minutes)
     {
         String row = "<tr>";
         row  += "<td>" + programName + "</td>";
@@ -248,7 +280,8 @@ public class SellerServlet extends HttpServlet {
         return row;
     }
 
-    private void createDynPage(HttpServletResponse response, String message) throws IOException { //dynamic page method
+    ////////////////////////////// CREATE A DYNAMIC PAGE //////////////////////////////////
+    private void createDynPage(HttpServletResponse response, String message) throws IOException {
         response.setContentType("text/html; charset=UTF-8");
         response.setCharacterEncoding("UTF-8");
         PrintWriter out = response.getWriter();

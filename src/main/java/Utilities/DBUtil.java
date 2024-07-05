@@ -18,7 +18,7 @@ public class DBUtil {
                 InitialContext ctx = new InitialContext();
                 datasource = (DataSource)ctx.lookup("java:comp/env/jdbc/LiveDataSource");
                 connection = datasource.getConnection();
-            }catch(Exception e) {
+            } catch(Exception e) {
                 e.printStackTrace();
             }
             return connection;

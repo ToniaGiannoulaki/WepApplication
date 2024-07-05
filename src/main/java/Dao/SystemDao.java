@@ -46,7 +46,6 @@ public class SystemDao {
             sb.append(AlphaNumericString
                     .charAt(index));
         }
-
         return sb.toString();
     }
 
@@ -114,7 +113,8 @@ public class SystemDao {
     public boolean signupAdmin(String username, String name, String surname, String password, String salt)
     {
         try {
-            PreparedStatement preparedStatement1 = connection.prepareStatement("INSERT into users (username, name, surname, type, password, salt) values (?,?,?,?,?,?)");
+            PreparedStatement preparedStatement1 = connection.prepareStatement(
+                    "INSERT into users (username, name, surname, type, password, salt) values (?,?,?,?,?,?)");
             preparedStatement1.setString(1, username);
             preparedStatement1.setString(2, name);
             preparedStatement1.setString(3, surname);
@@ -125,7 +125,8 @@ public class SystemDao {
                 System.out.println("Problem");
             }else System.out.println("ADDED user");
 
-            PreparedStatement preparedStatement2 = connection.prepareStatement("INSERT into admin (username) values (?)");
+            PreparedStatement preparedStatement2 = connection.prepareStatement(
+                    "INSERT into admin (username) values (?)");
             preparedStatement2.setString(1, username);
             if (preparedStatement2.executeUpdate() == 0) {
                 System.out.println("Problem");
@@ -134,7 +135,8 @@ public class SystemDao {
         }catch(SQLException e) {
             e.printStackTrace();
             try {
-                PreparedStatement delStatement = connection.prepareStatement("DELETE FROM users WHERE username=?");
+                PreparedStatement delStatement = connection.prepareStatement(
+                        "DELETE FROM users WHERE username=?");
                 delStatement.setString(1, username);
                 delStatement.executeUpdate();
             }catch (SQLException q){
@@ -145,10 +147,12 @@ public class SystemDao {
         return true;
     }
 
-    public boolean signupClient(String username, String name, String surname, String address, String afm, String phone, String password, String salt)
+    public boolean signupClient(String username, String name, String surname,
+                                String address, String afm, String phone, String password, String salt)
     {
         try {
-            PreparedStatement preparedStatement1 = connection.prepareStatement("INSERT into users (username, name, surname, type, password, salt) values (?,?,?,?,?,?)");
+            PreparedStatement preparedStatement1 = connection.prepareStatement(
+                    "INSERT into users (username, name, surname, type, password, salt) values (?,?,?,?,?,?)");
             preparedStatement1.setString(1, username);
             preparedStatement1.setString(2, name);
             preparedStatement1.setString(3, surname);
@@ -159,7 +163,8 @@ public class SystemDao {
                 System.out.println("Problem");
             }else System.out.println("ADDED user");
 
-            PreparedStatement preparedStatement2 = connection.prepareStatement("INSERT into clients (user_username, address, phone_number, afm) values (?, ?, ?, ?)");
+            PreparedStatement preparedStatement2 = connection.prepareStatement(
+                    "INSERT into clients (user_username, address, phone_number, afm) values (?, ?, ?, ?)");
             preparedStatement2.setString(1, username);
             preparedStatement2.setString(2, address);
             preparedStatement2.setString(3, phone);
@@ -185,7 +190,8 @@ public class SystemDao {
     public boolean signupSeller(String username, String name, String surname, String password, String salt)
     {
         try {
-            PreparedStatement preparedStatement1 = connection.prepareStatement("INSERT into users (username, name, surname, type, password, salt) values (?,?,?,?,?,?)");
+            PreparedStatement preparedStatement1 = connection.prepareStatement(
+                    "INSERT into users (username, name, surname, type, password, salt) values (?,?,?,?,?,?)");
             preparedStatement1.setString(1, username);
             preparedStatement1.setString(2, name);
             preparedStatement1.setString(3, surname);
@@ -196,7 +202,8 @@ public class SystemDao {
                 System.out.println("Problem");
             }else System.out.println("ADDED user");
 
-            PreparedStatement preparedStatement = connection.prepareStatement("INSERT into sellers (username) values (?)");
+            PreparedStatement preparedStatement = connection.prepareStatement(
+                    "INSERT into sellers (username) values (?)");
             preparedStatement.setString(1, username);
             if (preparedStatement.executeUpdate() == 0) {
                 System.out.println("Problem");
@@ -205,7 +212,8 @@ public class SystemDao {
         }catch(SQLException e) {
             e.printStackTrace();
             try {
-                PreparedStatement delStatement = connection.prepareStatement("DELETE FROM users WHERE username=?");
+                PreparedStatement delStatement = connection.prepareStatement(
+                        "DELETE FROM users WHERE username=?");
                 delStatement.setString(1, username);
                 delStatement.executeUpdate();
             }catch (SQLException q){

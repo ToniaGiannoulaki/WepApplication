@@ -20,7 +20,6 @@ public class RegisterServlet extends HttpServlet {
 
     SystemDao dao = new SystemDao(); //get login validator instance
 
-
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
@@ -35,8 +34,7 @@ public class RegisterServlet extends HttpServlet {
 
         String usernamevalidation=dao.signupUsernameCheck(username); //check for duplicate username
 
-        if (usernamevalidation.equals("ok"))
-        {
+        if (usernamevalidation.equals("ok")) {
             MessageDigest digest;
             try {
                 digest = MessageDigest.getInstance("SHA-1");
@@ -54,18 +52,15 @@ public class RegisterServlet extends HttpServlet {
                         request.setAttribute("role", "admin");
                         response.sendRedirect("admin.jsp");
                     }
-                }else
+                } else
                 {
                     System.out.println("Something went wrong");
                     response.sendRedirect("index.jsp");
                 }
-            }
-            catch (NoSuchAlgorithmException e)
-            {
+            } catch (NoSuchAlgorithmException e){
                 e.printStackTrace();
             }
-        } else
-        {
+        } else {
             request.setAttribute("message", usernamevalidation);
             request.setAttribute("user", username);
             response.sendRedirect("index.jsp");

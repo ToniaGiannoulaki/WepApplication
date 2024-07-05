@@ -32,6 +32,10 @@ public class ClientServlet extends HttpServlet{
         response.setCharacterEncoding("UTF-8");
         request.setCharacterEncoding("UTF-8");
 
+        ////////////////////////////////////////////////////////////////
+        ///////////////////// SHOW BILLS AND PAY ///////////////////////
+        ////////////////////////////////////////////////////////////////
+
         if(request.getParameter("showBills") != null){
             PrintWriter out = response.getWriter();
             out.println("<html>");
@@ -85,7 +89,11 @@ public class ClientServlet extends HttpServlet{
                 throw new RuntimeException(e);
             }
 
-        } else if(request.getParameter("showHistory") != null){
+        ////////////////////////////////////////////////////////////////
+        //////////////////////// SHOW CALLS ////////////////////////////
+        ////////////////////////////////////////////////////////////////
+
+        } else if (request.getParameter("showHistory") != null) {
             PrintWriter out = response.getWriter();
             out.println("<html>");
             out.println("<head><title>Ιστορικό κλήσεων</title> </head>");
@@ -98,24 +106,47 @@ public class ClientServlet extends HttpServlet{
             out.println("<th>Διάρκεια κλήσης</th>");
             out.println("<th>Ημερομηνία</th>");
             out.println("</tr>");
-            PreparedStatement preparedStatement1 = null; //find program info
-            try {
-                preparedStatement1 = connection
-                        .prepareStatement("SELECT startTime, endTime, duration, date FROM calls");
-                ResultSet rs1 = preparedStatement1.executeQuery();
-                while (rs1.next()) { //if DB returns data - until data ends
-                    String startTime = rs1.getString("startTime");
-                    String endTime = rs1.getString("endTime");
-                    String duration = rs1.getString("duration");
-                    String date = rs1.getString("date");
 
-                    String htmlRow = createHTMLRowCalls(startTime,endTime, duration, date); // html table with all the data
-                    out.println(htmlRow);
+            try {
+                String specificUsername = request.getParameter("username");
+                if (specificUsername == null || specificUsername.isEmpty()) {
+                    specificUsername = (String) request.getSession().getAttribute("username");
                 }
-                rs1.close();
+                System.out.println("Retrieved username: " + specificUsername);
+
+                if (specificUsername == null || specificUsername.isEmpty()) {
+                    out.println("<p style=\"font-size: 25px\">Username is missing</p>");
+                } else {
+                    PreparedStatement preparedStatement1 = connection.prepareStatement(
+                            "SELECT \"startTime\", \"endtime\", duration, date, username FROM calls WHERE username = ?"
+                    );
+                    preparedStatement1.setString(1, specificUsername); // Set the username parameter
+
+                    ResultSet rs1 = preparedStatement1.executeQuery();
+                    boolean hasResults = false;
+                    while (rs1.next()) { // if DB returns data - until data ends
+                        hasResults = true;
+                        String startTime = rs1.getString("startTime");
+                        String endTime = rs1.getString("endtime");
+                        int duration = rs1.getInt("duration");
+                        Date date = rs1.getDate("date");
+                        String username = rs1.getString("username");
+
+                        System.out.println("Retrieved row - Username: " + username);
+
+                        String htmlBill = createHTMLRowCalls(startTime, endTime, duration, date.toString());
+                        out.println(htmlBill);
+                    }
+                    if (!hasResults) {
+                        out.println("<tr><td colspan='4'>No call history found for the user</td></tr>");
+                    }
+                    rs1.close();
+                    preparedStatement1.close();
+                }
             } catch (SQLException e) {
-                throw new RuntimeException(e);
+                e.printStackTrace();
             }
+            out.close();
         }
     }
 
@@ -126,7 +157,11 @@ public class ClientServlet extends HttpServlet{
         response.setHeader("Pragma", "no-cache");
         response.setDateHeader("Expires", 0); //restrict caching
 
-        if (request.getParameter("billId") != null){ //pay bill
+        ////////////////////////////////////////////////////////////////
+        ////////////////////////// PAY BILL ////////////////////////////
+        ////////////////////////////////////////////////////////////////
+
+        if (request.getParameter("billId") != null){
             int billId = Integer.parseInt(request.getParameter("billId"));
 
             try{
@@ -145,9 +180,11 @@ public class ClientServlet extends HttpServlet{
                 System.err.println(e.getMessage());
                 e.printStackTrace();
             }
+            response.sendRedirect("client.jsp");
         }
     }
 
+    ////////////////////////////// CREATE TABLE FOR SHOW AND PAYMENT OF THE BILLS //////////////////////////////////
     private String createHTMLRowPayBills(int id, String username, String phone, String program_name, String month, int charge, boolean paid){
         // Initialize the row variable
         String row = "<tr>" +
@@ -173,7 +210,8 @@ public class ClientServlet extends HttpServlet{
         return row;
     }
 
-    private String createHTMLRowCalls(String startTime, String endTime, String duration, String date) //create table for programs
+    ////////////////////////////// CREATE TABLE FOR CALLS //////////////////////////////////
+    private String createHTMLRowCalls(String startTime, String endTime, int duration, String date) //create table for programs
     {
         String row = "<tr>";
         row  += "<td>" + startTime + "</td>";
@@ -184,7 +222,7 @@ public class ClientServlet extends HttpServlet{
         return row;
     }
 
-
+    ////////////////////////////// CREATE A DYNAMIC PAGE //////////////////////////////////
     private void createDynPage(HttpServletResponse response, String message) throws IOException { //dynamic page method
         response.setContentType("text/html; charset=UTF-8");
         response.setCharacterEncoding("UTF-8");
@@ -196,10 +234,6 @@ public class ClientServlet extends HttpServlet{
         out.println("<a href=\"client.jsp\">Επιστροφή στην αρχική σελίδα</a>");
         out.println("<br><br>");
         out.println("</body></html>");
-    }
-
-    private void Bills (String resp, String req){
-
     }
 }
 
