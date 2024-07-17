@@ -91,7 +91,9 @@ public class AdminServlet extends HttpServlet {
 
             try{
                 PreparedStatement preparedStatement1 = connection
-                        .prepareStatement("INSERT INTO programs(program_name, charge, data, sms, minutes) VALUES (?, ?, ?, ?, ?)");
+                        .prepareStatement(
+                                "INSERT INTO programs" +
+                                        "(program_name, charge, data, sms, minutes) VALUES (?, ?, ?, ?, ?)");
                 preparedStatement1.setString(1, program_name);
                 preparedStatement1.setInt(2, charge);
                 preparedStatement1.setInt(3, data);
@@ -127,7 +129,8 @@ public class AdminServlet extends HttpServlet {
 
             try {
                 PreparedStatement preparedStatement1 = connection
-                        .prepareStatement("UPDATE programs SET charge = ?, data = ?, sms = ?, minutes = ? WHERE program_name = ?");
+                        .prepareStatement(
+                                "UPDATE programs SET charge = ?, data = ?, sms = ?, minutes = ? WHERE program_name = ?");
                 preparedStatement1.setInt(1, charge);
                 preparedStatement1.setInt(2, data);
                 preparedStatement1.setInt(3, sms);

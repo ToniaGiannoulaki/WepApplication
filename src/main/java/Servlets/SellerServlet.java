@@ -97,7 +97,8 @@ public class SellerServlet extends HttpServlet {
                 out.println("</tr>");
 
                 PreparedStatement preparedStatement1 = connection
-                        .prepareStatement("SELECT username, name, afm, phone_number, program_name FROM users INNER JOIN clients ON users.username = clients.user_username"); //find program info
+                        .prepareStatement("SELECT username, name, afm, phone_number, program_name " +
+                                "FROM users INNER JOIN clients ON users.username = clients.user_username"); //find program info
                 ResultSet rs1 = preparedStatement1.executeQuery();
                 while (rs1.next()) { //if DB returns data - until data ends
                     String name = rs1.getString("name");
@@ -238,7 +239,8 @@ public class SellerServlet extends HttpServlet {
             boolean paid = request.getParameter("paid").equals("Yes");
 
             try {
-                PreparedStatement pst = connection.prepareStatement("INSERT INTO bills (username, phone, program_name, month, charge, paid) VALUES (?, ?, ?, ?, ?, ?)");
+                PreparedStatement pst = connection.prepareStatement("INSERT INTO bills" +
+                        " (username, phone, program_name, month, charge, paid) VALUES (?, ?, ?, ?, ?, ?)");
                 pst.setString(1, username);
                 pst.setString(2, phone);
                 pst.setString(3, program_name);

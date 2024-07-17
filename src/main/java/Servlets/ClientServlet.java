@@ -185,7 +185,8 @@ public class ClientServlet extends HttpServlet{
     }
 
     ////////////////////////////// CREATE TABLE FOR SHOW AND PAYMENT OF THE BILLS //////////////////////////////////
-    private String createHTMLRowPayBills(int id, String username, String phone, String program_name, String month, int charge, boolean paid){
+    private String createHTMLRowPayBills(int id, String username, String phone,
+                                         String program_name, String month, int charge, boolean paid){
         // Initialize the row variable
         String row = "<tr>" +
                 "<td>" + id + "</td>" +
